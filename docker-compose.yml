@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  billing-service:
+    build: ./billing-service
+    ports:
+      - "8083:8083"
+    networks:
+      - hotel-network
+networks:
+  hotel-network:
+    driver: bridge  
