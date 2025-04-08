@@ -1,11 +1,35 @@
 version: "3.8"
 services:
+
   billing-service:
-    build: ./billing-service
+    build: ./billing-service-java
     ports:
       - "8083:8083"
     networks:
       - hotel-network
+
+  booking-db:
+    image: mysql:8.0
+    container_name: booking-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bookingdb
+    ports:
+      - "3306:3306"
+    networks:
+      - hotel-network
+
+  auth-db:
+    image: postgres:15
+    container_name: auth-db
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    networks:
+      - hotel-network
+
 networks:
   hotel-network:
     driver: bridge  
