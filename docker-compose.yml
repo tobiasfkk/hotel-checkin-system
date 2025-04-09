@@ -1,13 +1,6 @@
 version: "3.8"
 services:
 
-  billing-service:
-    build: ./billing-service-java
-    ports:
-      - "8083:8083"
-    networks:
-      - hotel-network
-
   booking-db:
     image: mysql:8.0
     container_name: booking-db
@@ -15,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: bookingdb
     ports:
-      - "3306:3306"
+      - "3307:3307"
     networks:
       - hotel-network
 
@@ -27,6 +20,22 @@ services:
       POSTGRES_DB: authdb
     ports:
       - "5432:5432"
+    networks:
+      - hotel-network
+
+  booking-service:
+    build: ./booking-service-php
+    ports:
+      - "8084:80"
+    depends_on:
+      - booking-db  
+    networks:
+      - hotel-network
+
+  billing-service:
+    build: ./billing-service-java
+    ports:
+      - "8083:8083"
     networks:
       - hotel-network
 
