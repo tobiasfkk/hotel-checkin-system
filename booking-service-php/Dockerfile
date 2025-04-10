@@ -1,8 +1,8 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
-# Instala Nginx, Supervisor e extensões PHP
+# Instala extensões e dependências
 RUN apt-get update && apt-get install -y \
-    nginx supervisor git unzip curl zip \
+    git unzip curl zip \
     libpng-dev libonig-dev libxml2-dev libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql pdo_mysql mbstring bcmath
 
@@ -18,17 +18,11 @@ COPY src/ /app
 # Instala dependências PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Copia config do Nginx
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Copia config do Supervisor
-COPY supervisord.conf /etc/supervisord.conf
-
 # Ajusta permissões
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
 # Expõe a porta HTTP
 EXPOSE 80
 
-# Inicia Nginx e PHP-FPM juntos
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+# Comando para iniciar o servidor Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
