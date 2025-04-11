@@ -1,4 +1,3 @@
-version: "3.8"
 services:
 
   booking-db:
@@ -31,6 +30,8 @@ services:
       - booking-db  
     networks:
       - hotel-network
+    volumes:
+      - ./booking-service-php/src:/app
 
   billing-service:
     build: ./billing-service-java
