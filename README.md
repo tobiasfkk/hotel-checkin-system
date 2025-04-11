@@ -17,9 +17,32 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 
 ### Containers que serão criados
 - **hotel-checkin-system**:
-  - **hotel-checkin-system-billing-service-1**: Faz o cálculo de acordo com a regra de negócio;
+  - **billing-service**: Faz o cálculo de acordo com a regra de negócio;
   - **booking-db**: Banco de dados do sistema;
   - **auth-db**: Banco de dados do sistema de autenticação.
+
+#### billing-service
+- **Método**: POST
+- **URL**: http://localhost:8083/api/billing
+- **Cabeçalhos**:
+  - Content-Type: application/json
+- **Corpo da requisição (JSON)**:
+  ```json
+  {
+    "pessoaId": 1,
+    "dataEntrada": "2023-10-01T14:00:00",
+    "dataSaida": "2023-10-03T18:00:00",
+    "vagasGaragem": 2
+  }
+  ```
+- **Resposta**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+  {
+    "valorTotal": 570.0
+  }
+  ```
 
 ### Testar banco de dados bookingdb no DBeaver
 - **URL**: jdbc:mysql://localhost:3306/bookingdb?allowPublicKeyRetrieval=true&useSSL=false
