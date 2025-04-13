@@ -18,10 +18,13 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ### Containers que serão criados
 - **hotel-checkin-system**:
   - **billing-service**: Faz o cálculo de acordo com a regra de negócio;
+  - **booking-service**: Mantém pessoas e reservas, e realiza check-in / check-out;
   - **booking-db**: Banco de dados do sistema;
   - **auth-db**: Banco de dados do sistema de autenticação.
 
 #### billing-service
+##### Api's disponibilizadas:
+###### Cálculo do valor da hospedagem
 - **Método**: POST
 - **URL**: http://localhost:8083/api/billing
 - **Cabeçalhos**:
@@ -42,6 +45,123 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   {
     "valorTotal": 570.0
   }
+  ```
+
+#### booking-service
+##### Api's disponibilizadas:
+##### CRUDE Pessoa (hóspede):
+###### Consultar Pessoas
+- **Método**: GET
+- **URL**: http://localhost:8084/api/pessoas
+- **Resposta**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "id": 1,
+        "nome": "João da Silva",
+        "cpf": "123.456.789-00",
+        "telefone": "(11) 91234-5678"
+    },
+    {
+        "id": 2,
+        "nome": "Gabriel Fernando Doege",
+        "cpf": "123.456.789-003",
+        "telefone": "(47) 9 9148-4284"
+    }
+  ```
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Não existem pessoas cadastradas"
+    }
+  ```
+###### Visualizar Pessoa
+- **Método**: GET
+- **URL**: http://localhost:8084/api/pessoas/id
+- **Respostas**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "id": 1,
+        "nome": "João da Silva",
+        "cpf": "123.456.789-00",
+        "telefone": "(11) 91234-5678"
+    },
+  ```
+  - **Status**: 404 NOT FOUND
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa não encontrada"
+    }
+  ```
+###### Cadastrar Pessoa
+- **Método**: POST
+- **URL**: http://localhost:8084/api/pessoas
+- **Body (JSON)**: 
+  ```json
+    {
+      "nome": "Jonas da Silva",
+      "cpf": "123.456.789-12",
+      "telefone": "(11) 91234-5688"
+    }
+  ```
+- **Resposta**:
+  - **Status**: 201 CREATED
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa incluída com sucesso"
+    }
+  ```
+
+###### Alterar Pessoa
+- **Método**: PUT
+- **URL**: http://localhost:8084/api/pessoas/id
+- **Body (JSON)**: 
+  ```json
+    {
+      "telefone": "(47) 99999-9999"
+    }
+  ```
+- **Respostas**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa alterada com sucesso"
+    }
+  ```
+
+  - **Status**: 404 NOT FOUND
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa não encontrada, dados não alterados"
+    }
+  ```
+
+###### Excluir Pessoa
+- **Método**: DELETE
+- **URL**: http://localhost:8084/api/pessoas/id
+- **Respostas**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa excluída com sucesso"
+    }
+  ```
+
+  - **Status**: 404 NOT FOUND
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa não encontrada, registro não excluído"
+    }
   ```
 
 ### Testar banco de dados bookingdb no DBeaver
