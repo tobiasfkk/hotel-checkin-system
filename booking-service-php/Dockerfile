@@ -15,14 +15,8 @@ WORKDIR /app
 # Copia aplicação
 COPY src/ /app
 
-# Instala dependências PHP
-RUN composer install --no-dev --optimize-autoloader
-
 # Ajusta permissões
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
 # Expõe a porta HTTP
 EXPOSE 80
-
-# Comando para iniciar o servidor Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]
