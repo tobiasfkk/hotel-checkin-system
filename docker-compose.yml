@@ -40,7 +40,7 @@ services:
     networks:
       - hotel-network
 
-  nginx:
+  api-gateway:
     image: nginx:latest
     ports:
       - "8080:8080"
