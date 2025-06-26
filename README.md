@@ -163,6 +163,56 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
         "message": "Pessoa não encontrada, registro não excluído"
     }
   ```
+##### CRUDE Reservas:
+###### Consultar Reservas  
+- **Método**: GET  
+- **URL**: http://localhost:8084/api/reservas  
+- **Resposta**:  
+  - **Status**: 200 OK  
+  - **Corpo da resposta (JSON)**:  
+  ```json
+  [
+    {
+        "id": 1,
+        "idPessoa": 1,
+        "numeroQuarto": 101,
+        "dataHoraInicio": "2025-06-27 14:00:00",
+        "dataHoraFim": "2025-06-28 14:00:00",
+        "pessoa": {
+            "id": 1,
+            "nome": "Jonas da Silva",
+            "cpf": "123.456.789-12",
+            "telefone": "(11) 91234-5688"
+        }
+    },
+    {
+        "id": 2,
+        "idPessoa": 2,
+        "numeroQuarto": 202,
+        "dataHoraInicio": "2025-06-30 14:00:00",
+        "dataHoraFim": "2025-07-15 14:00:00",
+        "pessoa": {
+            "id": 2,
+            "nome": "Gabriel",
+            "cpf": "123.456.789-32",
+            "telefone": "(11) 91234-5688"
+        }
+    }
+  ]
+
+###### Cadastrar Reserva  
+- **Método**: POST  
+- **URL**: http://localhost:8084/api/reservas  
+- **Body (JSON)**:  
+  ```json
+  {
+    "idPessoa": 1,
+    "numeroQuarto": 101,
+    "dataHoraInicio": "2025-06-27 14:00:00",
+    "dataHoraFim": "2025-06-28 14:00:00"
+  }
+  ```
+
 
 ### Testar banco de dados bookingdb no DBeaver
 - **URL**: jdbc:mysql://localhost:3306/bookingdb?allowPublicKeyRetrieval=true&useSSL=false

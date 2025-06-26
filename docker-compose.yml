@@ -33,7 +33,7 @@ services:
     volumes:
       - ./booking-service-php/src:/app
     command: >
-      sh -c "composer install --no-dev --optimize-autoloader &&
+      sh -c "composer install --optimize-autoloader &&
             cp .env.example .env &&
             php artisan key:generate &&
             php artisan migrate &&

@@ -11,7 +11,7 @@ class PessoaController extends Controller
 {
     /**
      * Consulta todas as pessoas cadastradas.
-     * @return Collection<int, static>
+     * @return JsonResponse
      */
     public function index() {
         $pessoa = Pessoa::all();
@@ -33,6 +33,8 @@ class PessoaController extends Controller
             'nome'     => 'required|string',
             'cpf'      => 'required|string|unique:pessoas,cpf',
             'telefone' => 'required|string',
+        ], [
+            'cpf.unique' => 'Já existe uma pessoa cadastrada com este CPF.',
         ]);
 
         Pessoa::create($validated);
