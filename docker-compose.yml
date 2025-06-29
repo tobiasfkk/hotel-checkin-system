@@ -24,8 +24,9 @@ services:
 
   booking-service:
     build: ./booking-service-php
-    ports:
-      - "8084:80"
+    # Removendo a exposição da porta externa - apenas disponível internamente
+    expose:
+      - "80"
     depends_on:
       - booking-db  
     networks:
@@ -41,8 +42,9 @@ services:
 
   billing-service:
     build: ./billing-service-java
-    ports:
-      - "8083:8083"
+    # Removendo a exposição da porta externa - apenas disponível internamente
+    expose:
+      - "8083"
     networks:
       - hotel-network
 

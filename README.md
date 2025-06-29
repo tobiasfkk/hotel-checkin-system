@@ -26,7 +26,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ##### Api's disponibilizadas:
 ###### Cálculo do valor da hospedagem
 - **Método**: POST
-- **URL**: http://localhost:8083/api/billing
+- **URL**: http://localhost:8080/api/billing
 - **Cabeçalhos**:
   - Content-Type: application/json
 - **Corpo da requisição (JSON)**:
@@ -52,7 +52,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ##### CRUDE Pessoa (hóspede):
 ###### Consultar Pessoas
 - **Método**: GET
-- **URL**: http://localhost:8084/api/pessoas
+- **URL**: http://localhost:8080/api/pessoas
 - **Resposta**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -79,7 +79,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 ###### Visualizar Pessoa
 - **Método**: GET
-- **URL**: http://localhost:8084/api/pessoas/id
+- **URL**: http://localhost:8080/api/pessoas/{id}
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -100,7 +100,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 ###### Cadastrar Pessoa
 - **Método**: POST
-- **URL**: http://localhost:8084/api/pessoas
+- **URL**: http://localhost:8080/api/pessoas
 - **Body (JSON)**: 
   ```json
     {
@@ -120,7 +120,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 
 ###### Alterar Pessoa
 - **Método**: PUT
-- **URL**: http://localhost:8084/api/pessoas/id
+- **URL**: http://localhost:8080/api/pessoas/{id}
 - **Body (JSON)**: 
   ```json
     {
@@ -146,7 +146,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 
 ###### Excluir Pessoa
 - **Método**: DELETE
-- **URL**: http://localhost:8084/api/pessoas/id
+- **URL**: http://localhost:8080/api/pessoas/{id}
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -166,7 +166,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ##### CRUDE Reservas:
 ###### Consultar Reservas  
 - **Método**: GET  
-- **URL**: http://localhost:8084/api/reservas  
+- **URL**: http://localhost:8080/api/reservas  
 - **Resposta**:  
   - **Status**: 200 OK  
   - **Corpo da resposta (JSON)**:  
@@ -202,7 +202,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 
 ###### Cadastrar Reserva  
 - **Método**: POST  
-- **URL**: http://localhost:8084/api/reservas  
+- **URL**: http://localhost:8080/api/reservas  
 - **Body (JSON)**:  
   ```json
   {
