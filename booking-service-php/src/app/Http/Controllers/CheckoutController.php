@@ -43,35 +43,17 @@ class CheckoutController extends Controller
             return response()->json(['message' => 'Check-in não encontrado'], 404);
         }
 
-        $saida   = new DateTime($validated['dataHoraSaida']);
-        $entrada = new DateTime($checkin->dataHoraEntrada);
-
-        if ($saida < $entrada) {
+        if (!(new Checkout())->isDataHoraSaidaValida($validated['dataHoraSaida'], $checkin->dataHoraEntrada)) {
             return response()->json([
                 'message' => 'A data de check-out não pode ser anterior à data de check-in'
             ], 422);
         }
 
-        $dados = [
-            'pessoaId'     => 1,
-            'dataEntrada'  => $entrada->format('Y-m-d\TH:i:s'),
-            'dataSaida'    => $saida->format('Y-m-d\TH:i:s'),
-            'vagasGaragem' => $checkin->garagem,
-        ];
-
-        
-        $response = Http::post('http://billing-service:8083/api/billing', $dados);
-        
-        if ($response->failed()) {
-            return response()->json(['message' => 'Erro ao calcular valor da estadia'], 500);
-        }
-
-        $valor = $response->json('valorTotal');
-
+        $valor    = (new Checkout())->calcularValorCheckout($checkin->dataHoraEntrada, $validated['dataHoraSaida'], $checkin->garagem);
         $checkout = Checkout::create([
             'checkin_id'    => $validated['checkin_id'],
             'dataHoraSaida' => $validated['dataHoraSaida'],
-            'valor'         => $valor,
+            'valor'         => $valor
         ]);
 
         return response()->json(['message' => 'Check-out criado com sucesso', 'checkout' => $checkout], 201);

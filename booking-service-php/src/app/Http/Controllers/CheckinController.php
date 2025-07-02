@@ -43,11 +43,7 @@ class CheckinController extends Controller
             return response()->json(['message' => 'Reserva não encontrada'], 404);
         }
 
-        $entrada        = new DateTime($validated['dataHoraEntrada']);
-        $inicioReserva  = new DateTime($reserva->dataHoraInicio);
-        $fimReserva     = new DateTime($reserva->dataHoraFim);
-
-        if ($entrada < $inicioReserva || $entrada > $fimReserva) {
+        if (!(new Checkin())->isDataHoraEntradaValida($validated['dataHoraEntrada'], $reserva->dataHoraInicio, $reserva->dataHoraFim)) {
             return response()->json([
                 'message' => 'A data de check-in deve estar entre o início e final da Reserva'
             ], 422);
