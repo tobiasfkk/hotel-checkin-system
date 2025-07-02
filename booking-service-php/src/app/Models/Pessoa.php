@@ -20,6 +20,11 @@ class Pessoa extends Model
     
     public $timestamps = false;
 
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
+
     /**
      * Realiza o tratamento para inserir no banco o CPF formatado (999.999.999-99).
      * @param string $value

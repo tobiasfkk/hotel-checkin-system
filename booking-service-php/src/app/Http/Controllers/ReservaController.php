@@ -80,4 +80,19 @@ class ReservaController extends Controller
 
         return response()->json(['message' => 'Reserva atualizada com sucesso'], 200);
     }
+
+    /**
+     * Exclui um cadastro de Reserva.
+     * @param integer $id
+     * @return JsonResponse
+     */
+    public function destroy($id) {
+        if (!$reserva = Reserva::find($id)) {
+            return response()->json(['message' => 'Reserva não encontrada, registro não excluído'], 404);
+        }
+
+        $reserva->delete();
+
+        return response()->json(['message' => 'Reserva excluída com sucesso'], 200);
+    }
 }

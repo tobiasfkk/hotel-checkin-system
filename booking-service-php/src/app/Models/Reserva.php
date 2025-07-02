@@ -24,4 +24,9 @@ class Reserva extends Model
     {
         return $this->belongsTo(Pessoa::class, 'idPessoa');
     }
+
+    public function checkin()
+    {
+        return $this->hasOne(Checkin::class);
+    }
 }
