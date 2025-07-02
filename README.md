@@ -50,9 +50,33 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 #### booking-service
 ##### Api's disponibilizadas:
 ##### CRUDE Pessoa (hóspede):
+###### Cadastrar Pessoa
+- **Método**: POST
+- **URL**: http://localhost:8080/api/pessoas
+- **Cabeçalhos**:
+  - Accept: application/json
+- **Body (JSON)**: 
+  ```json
+    {
+      "nome": "Jonas da Silva",
+      "cpf": "123.456.789-12",
+      "telefone": "(11) 91234-5688"
+    }
+  ```
+- **Resposta**:
+  - **Status**: 201 CREATED
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Pessoa incluída com sucesso"
+    }
+  ```
+
 ###### Consultar Pessoas
 - **Método**: GET
 - **URL**: http://localhost:8080/api/pessoas
+- **Cabeçalhos**:
+  - Accept: application/json
 - **Resposta**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -77,9 +101,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
         "message": "Não existem pessoas cadastradas"
     }
   ```
+
 ###### Visualizar Pessoa
 - **Método**: GET
 - **URL**: http://localhost:8080/api/pessoas/{id}
+- **Cabeçalhos**:
+  - Accept: application/json
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -98,29 +125,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
         "message": "Pessoa não encontrada"
     }
   ```
-###### Cadastrar Pessoa
-- **Método**: POST
-- **URL**: http://localhost:8080/api/pessoas
-- **Body (JSON)**: 
-  ```json
-    {
-      "nome": "Jonas da Silva",
-      "cpf": "123.456.789-12",
-      "telefone": "(11) 91234-5688"
-    }
-  ```
-- **Resposta**:
-  - **Status**: 201 CREATED
-  - **Corpo da resposta (JSON)**:
-  ```json
-    {
-        "message": "Pessoa incluída com sucesso"
-    }
-  ```
-
+  
 ###### Alterar Pessoa
 - **Método**: PUT
 - **URL**: http://localhost:8080/api/pessoas/{id}
+- **Cabeçalhos**:
+  - Accept: application/json
 - **Body (JSON)**: 
   ```json
     {
@@ -147,6 +157,8 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ###### Excluir Pessoa
 - **Método**: DELETE
 - **URL**: http://localhost:8080/api/pessoas/{id}
+- **Cabeçalhos**:
+  - Accept: application/json
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -164,55 +176,130 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
     }
   ```
 ##### CRUDE Reservas:
+###### Cadastrar Reserva  
+- **Método**: POST  
+- **URL**: http://localhost:8080/api/reservas
+- **Cabeçalhos**:
+  - Accept: application/json  
+- **Body (JSON)**:  
+  ```json
+  {
+    "idPessoa": 1,
+    "numeroQuarto": 101,
+    "dataHoraInicio": "2025-10-01 14:00:00",
+    "dataHoraFim": "2025-10-15 14:00:00"
+  }
+  ```
+
 ###### Consultar Reservas  
 - **Método**: GET  
 - **URL**: http://localhost:8080/api/reservas  
+- **Cabeçalhos**:
+  - Accept: application/json
 - **Resposta**:  
   - **Status**: 200 OK  
   - **Corpo da resposta (JSON)**:  
   ```json
-  [
     {
         "id": 1,
         "idPessoa": 1,
         "numeroQuarto": 101,
-        "dataHoraInicio": "2025-06-27 14:00:00",
-        "dataHoraFim": "2025-06-28 14:00:00",
+        "dataHoraInicio": "2025-10-01 14:00:00",
+        "dataHoraFim": "2025-10-15 14:00:00",
         "pessoa": {
             "id": 1,
             "nome": "Jonas da Silva",
             "cpf": "123.456.789-12",
             "telefone": "(11) 91234-5688"
         }
-    },
-    {
-        "id": 2,
-        "idPessoa": 2,
-        "numeroQuarto": 202,
-        "dataHoraInicio": "2025-06-30 14:00:00",
-        "dataHoraFim": "2025-07-15 14:00:00",
-        "pessoa": {
-            "id": 2,
-            "nome": "Gabriel",
-            "cpf": "123.456.789-32",
-            "telefone": "(11) 91234-5688"
-        }
     }
-  ]
-
-###### Cadastrar Reserva  
+  ```
+##### CRUDE Check-in:
+###### Cadastrar Check-in  
 - **Método**: POST  
-- **URL**: http://localhost:8080/api/reservas  
+- **URL**: http://localhost:8080/api/checkins
+- **Cabeçalhos**:
+  - Accept: application/json  
 - **Body (JSON)**:  
   ```json
   {
-    "idPessoa": 1,
-    "numeroQuarto": 101,
-    "dataHoraInicio": "2025-06-27 14:00:00",
-    "dataHoraFim": "2025-06-28 14:00:00"
+    "reserva_id": 1,
+    "dataHoraEntrada": "2025-10-01 14:00:00",
+    "garagem": 1
   }
   ```
 
+###### Consultar Check-in  
+- **Método**: GET  
+- **URL**: http://localhost:8080/api/checkins  
+- **Cabeçalhos**:
+  - Accept: application/json
+- **Resposta**:  
+  - **Status**: 200 OK  
+  - **Corpo da resposta (JSON)**:  
+  ```json
+    {
+        "reserva_id": 1,
+        "dataHoraEntrada": "2025-10-01 14:00:00",
+        "garagem": 1,
+        "reserva": {
+            "id": 1,
+            "idPessoa": 1,
+            "numeroQuarto": 101,
+            "dataHoraInicio": "2025-10-01 14:00:00",
+            "dataHoraFim": "2025-10-15 14:00:00"
+        }
+    }
+  ```
+
+##### CRUDE Check-out:
+###### Cadastrar Check-out 
+- **Método**: POST  
+- **URL**: http://localhost:8080/api/checkouts
+- **Cabeçalhos**:
+  - Accept: application/json  
+- **Body (JSON)**:  
+  ```json
+  {
+      "checkin_id": 1,
+      "dataHoraSaida": "2025-10-15 14:00:00"
+  }
+  ```
+
+  - **Resposta**:  
+  - **Status**: 201 CREATED  
+  - **Corpo da resposta (JSON)**:  
+  ```json
+  {
+    "message": "Check-out criado com sucesso",
+    "checkout": {
+        "checkin_id": 1,
+        "dataHoraSaida": "2025-10-15 14:00:00",
+        "valor": 2165
+    }
+  }
+  ```
+
+###### Consultar Check-out  
+- **Método**: GET  
+- **URL**: http://localhost:8080/api/checkouts  
+- **Cabeçalhos**:
+  - Accept: application/json
+- **Resposta**:  
+  - **Status**: 200 OK  
+  - **Corpo da resposta (JSON)**:  
+  ```json
+    {
+        "checkin_id": 1,
+        "dataHoraSaida": "2025-10-15 14:00:00",
+        "valor": "2165.00",
+        "checkin": {
+            "reserva_id": 1,
+            "dataHoraEntrada": "2025-10-01 14:00:00",
+            "garagem": 1
+        }
+    }
+  ```
 
 ### Testar banco de dados bookingdb no DBeaver
 - **URL**: jdbc:mysql://localhost:3306/bookingdb?allowPublicKeyRetrieval=true&useSSL=false

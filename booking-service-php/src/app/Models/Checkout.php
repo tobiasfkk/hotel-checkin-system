@@ -23,6 +23,6 @@ class Checkout extends Model
 
     public function checkin()
     {
-        return $this->belongsTo(Checkin::class);
+        return $this->belongsTo(Checkin::class, 'checkin_id', 'reserva_id');
     }
 }
