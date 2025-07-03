@@ -29,4 +29,23 @@ class Reserva extends Model
     {
         return $this->hasOne(Checkin::class);
     }
+
+    /**
+     * Verifica se o quarto está disponível para reserva.
+     * @param int $numeroQuarto
+     * @param string $dataHoraInicio
+     * @param string $dataHoraFim
+     * @return bool
+     */
+    public function isQuartoDisponivel(int $numeroQuarto, string $dataHoraInicio, string $dataHoraFim): bool
+    {
+        $reservas = Reserva::where('numeroQuarto', $numeroQuarto)
+            ->where(function ($query) use ($dataHoraInicio, $dataHoraFim) {
+                $query->whereBetween('dataHoraInicio', [$dataHoraInicio, $dataHoraFim])
+                      ->orWhereBetween('dataHoraFim', [$dataHoraInicio, $dataHoraFim]);
+            })
+            ->exists();
+
+        return !$reservas;
+    }
 }

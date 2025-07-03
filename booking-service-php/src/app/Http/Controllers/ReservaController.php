@@ -37,6 +37,12 @@ class ReservaController extends Controller
             'dataHoraFim'    => 'required|date|after:dataHoraInicio',
         ]);
 
+        if (!(new Reserva())->isQuartoDisponivel($validated['numeroQuarto'], $validated['dataHoraInicio'], $validated['dataHoraFim'])) {
+            return response()->json([
+                'message' => 'O quarto não está disponível para as datas selecionadas'
+            ], 422);
+        }
+
         Reserva::create($validated);
 
         return response()->json(['message' => 'Reserva criada com sucesso'], 201);
@@ -75,6 +81,12 @@ class ReservaController extends Controller
             'dataHoraInicio' => 'sometimes|required|date',
             'dataHoraFim'    => 'sometimes|required|date|after:dataHoraInicio',
         ]);
+
+        if (!(new Reserva())->isQuartoDisponivel($validated['numeroQuarto'], $validated['dataHoraInicio'], $validated['dataHoraFim'])) {
+            return response()->json([
+                'message' => 'O quarto não está disponível para as datas selecionadas'
+            ], 422);
+        }
 
         $reserva->update($validated);
 
