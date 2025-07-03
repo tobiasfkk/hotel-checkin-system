@@ -18,11 +18,5 @@ COPY src/ /app
 # Ajusta permissões
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-# Instala dependências PHP via composer
-RUN composer require laravel/sanctum
-
-# Publica arquivos de configuração do Sanctum
-RUN php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-
 # Expõe a porta HTTP
 EXPOSE 80

@@ -34,6 +34,8 @@ services:
       - hotel-network
     command: >
       sh -c "composer install --optimize-autoloader &&
+            composer require laravel/sanctum &&
+            php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" &&
             cp .env.example .env &&
             php artisan key:generate &&
             php artisan migrate &&
@@ -52,6 +54,8 @@ services:
       - ./booking-service-php/src:/app
     command: >
       sh -c "composer install --optimize-autoloader &&
+            composer require laravel/sanctum &&
+            php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" &&
             cp .env.example .env &&
             php artisan key:generate &&
             php artisan migrate &&
