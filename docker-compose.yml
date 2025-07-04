@@ -30,8 +30,6 @@ services:
       - auth-db
     volumes:
       - ./auth-service-php/src:/app
-      - ./auth-service-php/src/.env:/app/.env
-
     networks:
       - hotel-network
     command: >
