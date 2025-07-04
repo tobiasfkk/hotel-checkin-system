@@ -18,6 +18,7 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 ### Containers que serão criados
 - **hotel-checkin-system**:
   - **billing-service**: Faz o cálculo de acordo com a regra de negócio;
+  - **auth-service**: Permite registrar usuário e realizar login;
   - **booking-service**: Mantém pessoas e reservas, e realiza check-in / check-out;
   - **booking-db**: Banco de dados do sistema;
   - **auth-db**: Banco de dados do sistema de autenticação.
@@ -47,14 +48,71 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   }
   ```
 
+#### auth-service
+##### Api's disponibilizadas:
+###### Registrar Usuário
+- **Método**: POST
+- **URL**: http://localhost:8080/api/register
+- **Cabeçalhos**:
+  - Accept: application/json
+- **Body (JSON)**: 
+  ```json
+    {
+      "name": "Gabriel",
+      "email": "gabrieladmin@gmail.com",
+      "password": "123456",
+      "role": "admin"
+    }
+  ```
+  ```json
+    {
+      "name": "Gabriel",
+      "email": "gabrielnormal@gmail.com",
+      "password": "123456",
+      "role": "normal"
+    }
+  ```
+- **Resposta**:
+  - **Status**: 201 CREATED
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+        "message": "Usuário criado com sucesso"
+    }
+  ```
+###### Realizar Login
+- **Método**: POST
+- **URL**: http://localhost:8080/api/login
+- **Cabeçalhos**:
+  - Accept: application/json
+- **Body (JSON)**: 
+  ```json
+    {
+        "email": "gabrieladmin@gmail.com",
+        "password": "123456"
+    }
+  ```
+- **Resposta**:
+  - **Status**: 200 OK
+  - **Corpo da resposta (JSON)**:
+  ```json
+    {
+      "token": "token",
+      "token_type": "bearer",
+      "expires_in": 3600
+    }
+  ```
+
 #### booking-service
 ##### Api's disponibilizadas:
 ##### CRUDE Pessoa (hóspede):
 ###### Cadastrar Pessoa
+- **Disponível para**: admin
 - **Método**: POST
 - **URL**: http://localhost:8080/api/pessoas
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Body (JSON)**: 
   ```json
     {
@@ -73,10 +131,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Consultar Pessoas
+- **Disponível para**: admin e normal
 - **Método**: GET
 - **URL**: http://localhost:8080/api/pessoas
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Resposta**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -103,10 +163,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Visualizar Pessoa
+- **Disponível para**: admin e normal
 - **Método**: GET
 - **URL**: http://localhost:8080/api/pessoas/{id}
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -127,10 +189,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
   
 ###### Alterar Pessoa
+- **Disponível para**: admin
 - **Método**: PUT
 - **URL**: http://localhost:8080/api/pessoas/{id}
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Body (JSON)**: 
   ```json
     {
@@ -155,10 +219,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Excluir Pessoa
+- **Disponível para**: admin
 - **Método**: DELETE
 - **URL**: http://localhost:8080/api/pessoas/{id}
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Respostas**:
   - **Status**: 200 OK
   - **Corpo da resposta (JSON)**:
@@ -177,10 +243,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 ##### CRUDE Reservas:
 ###### Cadastrar Reserva  
+- **Disponível para**: admin
 - **Método**: POST  
 - **URL**: http://localhost:8080/api/reservas
 - **Cabeçalhos**:
-  - Accept: application/json  
+  - Accept: application/json
+  - Authorization: Bearer login_token
 - **Body (JSON)**:  
   ```json
   {
@@ -192,10 +260,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Consultar Reservas  
+- **Disponível para**: admin e normal
 - **Método**: GET  
 - **URL**: http://localhost:8080/api/reservas  
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Resposta**:  
   - **Status**: 200 OK  
   - **Corpo da resposta (JSON)**:  
@@ -216,10 +286,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 ##### CRUDE Check-in:
 ###### Cadastrar Check-in  
+- **Disponível para**: admin
 - **Método**: POST  
 - **URL**: http://localhost:8080/api/checkins
 - **Cabeçalhos**:
-  - Accept: application/json  
+  - Accept: application/json
+  - Authorization: Bearer login_token  
 - **Body (JSON)**:  
   ```json
   {
@@ -230,10 +302,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Consultar Check-in  
+- **Disponível para**: admin e normal
 - **Método**: GET  
 - **URL**: http://localhost:8080/api/checkins  
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Resposta**:  
   - **Status**: 200 OK  
   - **Corpo da resposta (JSON)**:  
@@ -254,10 +328,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 
 ##### CRUDE Check-out:
 ###### Cadastrar Check-out 
+- **Disponível para**: admin
 - **Método**: POST  
 - **URL**: http://localhost:8080/api/checkouts
 - **Cabeçalhos**:
-  - Accept: application/json  
+  - Accept: application/json
+  - Authorization: Bearer login_token  
 - **Body (JSON)**:  
   ```json
   {
@@ -281,10 +357,12 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
   ```
 
 ###### Consultar Check-out  
+- **Disponível para**: admin e normal
 - **Método**: GET  
 - **URL**: http://localhost:8080/api/checkouts  
 - **Cabeçalhos**:
   - Accept: application/json
+  - Authorization: Bearer login_token
 - **Resposta**:  
   - **Status**: 200 OK  
   - **Corpo da resposta (JSON)**:  
