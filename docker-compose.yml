@@ -34,9 +34,8 @@ services:
       - hotel-network
     command: >
       sh -c "composer install --optimize-autoloader &&
-            composer require laravel/sanctum &&
-            php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" &&
             cp .env.example .env &&
+            php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider" &&
             php artisan key:generate &&
             php artisan migrate &&
             php artisan serve --host=0.0.0.0 --port=80"
@@ -54,8 +53,6 @@ services:
       - ./booking-service-php/src:/app
     command: >
       sh -c "composer install --optimize-autoloader &&
-            composer require laravel/sanctum &&
-            php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" &&
             cp .env.example .env &&
             php artisan key:generate &&
             php artisan migrate &&
@@ -76,7 +73,7 @@ services:
     volumes:
       - ./api-gateway-java/src/main/resources/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-#      - auth-service
+      - auth-service
       - booking-service
       - billing-service
     networks:

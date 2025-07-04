@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -20,6 +21,7 @@ class AuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'role'     => 'required|string|in:admin,normal'
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -36,22 +38,19 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validated = $request->validate([
-            'email'    => 'required|email',
+        $credentials = $request->validate([
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
-
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
-            'access_token' => $token,
-            'token_type'   => 'Bearer',
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
     }
 
@@ -61,13 +60,18 @@ class AuthController extends Controller
      * @return Response
      */
     public function validateToken(Request $request)
-    {        
-        $user = Auth::guard('sanctum')->user();
+    {  
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
 
-        if (!$user) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            if (!$user) {
+                return response()->json(['message' => 'Usuário não encontrado'], 401);
+            }
+
+            return response()->noContent(); // 204
+            
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Exception'], 401);
         }
-
-        return response()->noContent(); // HTTP 204, como esperado pelo Nginx
     }
 }
