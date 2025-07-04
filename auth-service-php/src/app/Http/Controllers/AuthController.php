@@ -67,8 +67,8 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json(['message' => 'Usuário não encontrado'], 401);
             }
-
-            if (!$user->isAdmin() && !$request->isMethod('GET')) {
+            
+            if (!$user->isAdmin() && $request->header('X-Original-Method') !== 'GET') {
                 return response()->json(['message' => 'Acesso negado'], 401);
             }
 
