@@ -14,8 +14,6 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
     cd hotel-checkin-system
 #### Executar o comando abaixo para criar os containers
     docker-compose up --build -d
-#### Após todos containers terem sido criados corretamente
-    docker-compose exec -it auth-service php artisan jwt:secret
 
 ### Containers que serão criados
 - **hotel-checkin-system**:

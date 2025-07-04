@@ -30,12 +30,15 @@ services:
       - auth-db
     volumes:
       - ./auth-service-php/src:/app
+      - ./auth-service-php/src/.env:/app/.env
+
     networks:
       - hotel-network
     command: >
       sh -c "composer install --optimize-autoloader &&
             cp .env.example .env &&
             php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider" &&
+            php artisan jwt:secret &&
             php artisan key:generate &&
             php artisan migrate &&
             php artisan serve --host=0.0.0.0 --port=80"

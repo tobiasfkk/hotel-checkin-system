@@ -68,6 +68,10 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Usuário não encontrado'], 401);
             }
 
+            if (!$user->isAdmin() && !$request->isMethod('GET')) {
+                return response()->json(['message' => 'Acesso negado'], 401);
+            }
+
             return response()->noContent(); // 204
             
         } catch (\Exception $e) {
