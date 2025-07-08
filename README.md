@@ -4,16 +4,61 @@ Link projeto GitHub: [clique aqui](https://github.com/tobiasfkk/hotel-checkin-sy
 
 Link documentação do projeto: [clique aqui](https://docs.google.com/document/d/1m9LEzCmzR_oC7NxS5YKpZn0MdXIGspTrQjg9MrLaiks/edit?usp=sharing)
 
-### Executar o projeto
-#### Instalar o Docker e o Docker Compose
+## 📊 Sistema de Monitoramento com Grafana
+
+Este projeto inclui um **sistema de monitoramento profissional** usando Grafana, que permite visualizar em tempo real a performance e saúde dos serviços.
+
+### 🎯 Para que serve o Grafana?
+- **📈 Monitoramento em tempo real** - CPU, memória, containers
+- **🔍 Análise de performance** - Detecta gargalos e problemas
+- **🚨 Alertas automáticos** - Notifica quando algo está errado
+- **📋 Dashboards interativos** - Gráficos e métricas personalizáveis
+
+### 🚀 Como acessar o Grafana
+```
+URL: http://localhost:3000
+Usuário: admin
+Senha: admin123
+```
+
+### 📊 Dashboard Principal
+- **Hotel Overview:** http://localhost:3000/d/hotel-overview
+- **Métricas disponíveis:** CPU, Memória, Status dos serviços, Containers Docker
+- **Atualizações:** Automáticas a cada 30 segundos
+
+> **📖 Guia Completo:** Veja o arquivo [GUIA-GRAFANA.md](./GUIA-GRAFANA.md) para instruções detalhadas de uso.
+
+---
+
+## 🛠️ Executar o projeto
+
+### Ambientes disponíveis:
+- **Desenvolvimento:** `docker-compose.dev.yml`
+- **Produção:** `docker-compose.prod.yml` 
+- **Monitoramento:** `docker-compose.monitoring.yml`
+- **Análise de código:** `docker-compose.sonar.yml`
+
+### Instalação
+#### Pré-requisitos
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+
 #### Clonar o repositório
-    git clone https://github.com/tobiasfkk/hotel-checkin-system
-#### Acessar a pasta do projeto
-    cd hotel-checkin-system
-#### Executar o comando abaixo para criar os containers
-    docker-compose up --build -d
+```bash
+git clone https://github.com/tobiasfkk/hotel-checkin-system
+cd hotel-checkin-system
+```
+
+#### Executar ambiente completo (recomendado)
+```bash
+# Ambiente de desenvolvimento com monitoramento
+docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.yml up --build -d
+```
+
+#### Ou executar apenas os serviços principais
+```bash
+docker-compose up --build -d
+```
 
 ### Containers que serão criados
 - **hotel-checkin-system**:
