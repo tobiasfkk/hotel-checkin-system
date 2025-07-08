@@ -1,5 +1,5 @@
 pipeline {
-    agent docker
+    agent any
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials-id')
@@ -16,28 +16,33 @@ pipeline {
         stage('Build & Test - Auth (Laravel)') {
             steps {
                 dir('auth-service-php') {
-                    sh 'composer install'
-                    sh './vendor/bin/phpunit --coverage-text'
                     sh 'docker build -t $DOCKER_IMAGE_PREFIX/auth-service .'
+                    sh 'docker run --rm $DOCKER_IMAGE_PREFIX/auth-service ./vendor/bin/phpunit --coverage-text'
                 }
             }
         }
 
         stage('Build & Test - Booking (Laravel)') {
             steps {
-                dir('booking-service') {
-                    sh 'composer install'
-                    sh './vendor/bin/phpunit --coverage-text'
+                dir('booking-service-php') {
                     sh 'docker build -t $DOCKER_IMAGE_PREFIX/booking-service .'
+                    sh 'docker run --rm $DOCKER_IMAGE_PREFIX/booking-service ./vendor/bin/phpunit --coverage-text'
                 }
             }
         }
 
         stage('Build & Test - Billing (Spring Boot)') {
             steps {
-                dir('billing-service') {
-                    sh './mvnw clean install'
+                dir('billing-service-java') {
                     sh 'docker build -t $DOCKER_IMAGE_PREFIX/billing-service .'
+                }
+            }
+        }
+
+        stage('Build - API Gateway') {
+            steps {
+                dir('api-gateway-java') {
+                    sh 'docker build -t $DOCKER_IMAGE_PREFIX/api-gateway .'
                 }
             }
         }
@@ -48,6 +53,7 @@ pipeline {
                     sh 'docker push $DOCKER_IMAGE_PREFIX/auth-service'
                     sh 'docker push $DOCKER_IMAGE_PREFIX/booking-service'
                     sh 'docker push $DOCKER_IMAGE_PREFIX/billing-service'
+                    sh 'docker push $DOCKER_IMAGE_PREFIX/api-gateway'
                 }
             }
         }
