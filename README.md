@@ -383,3 +383,20 @@ Link documentação do projeto: [clique aqui](https://docs.google.com/document/d
 - **URL**: jdbc:mysql://localhost:3306/bookingdb?allowPublicKeyRetrieval=true&useSSL=false
 - **Usuário**: root
 - **Senha**: root
+
+### Testar Jenkins
+#### Rodar conteiner Docker com Jenkins
+    docker run -d --name jenkins -p 8081:8080 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+#### Obter senha Jenkins
+    docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+### Após isso:
+ - Acessar http://localhost:8081/
+ - Informar a senha obtida
+ - Instalar as extensões sugeridas
+ - Criar conta
+### Adicionar credencial Docker Hub
+ - Na interface do Jenkins, acessar Gerenciar Jenkins > Credentials > (global) > Add Credentials;
+ - Preencher conforme abaixo:
+    - **Username**: Nome de usuário do Docker Hub
+    - **Password**: Senha ou token do Docker Hub
+    - **ID**: dockerhub-credentials-id
