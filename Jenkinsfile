@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_PREFIX = 'doege/hotel-checkin-system'
-        DOCKER_ENV = 'prod'
+        DOCKER_ENV = 'stag'
     }
 
     stages {
