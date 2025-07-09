@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Automática - Billing Service</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .card { background: white; border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-5px); }
+        .card h2 { color: #333; margin-bottom: 20px; font-size: 1.5em; }
+        .card p { color: #666; margin-bottom: 20px; line-height: 1.6; }
+        .btn { display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 8px; margin: 5px 10px 5px 0; transition: background 0.3s ease; font-weight: 500; }
+        .btn:hover { background: #5a6fd8; }
+        .status { text-align: center; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 30px; color: white; }
+        .command { background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; margin: 10px 0; border-left: 4px solid #667eea; font-size: 0.9em; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .footer { text-align: center; color: white; margin-top: 40px; opacity: 0.8; }
+        .icon { font-size: 2em; margin-bottom: 15px; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏨 Hotel Check-in System</h1>
+            <p>Documentação Javadoc Automática</p>
+        </div>
+        
+        <div class="status">
+            <strong>🕒 Documentação gerada automaticamente em: 08/07/2025 21:35:00</strong>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <span class="icon">📚</span>
+                <h2>Javadoc - Documentação do Código</h2>
+                <p>Documentação completa do código Java, incluindo todas as classes, métodos, parâmetros e exemplos de uso do Billing Service.</p>
+                <a href="javadoc/index.html" class="btn">📖 Abrir Javadoc</a>
+            </div>
+            
+            <div class="card">
+                <span class="icon">🧪</span>
+                <h2>Centro de Testes da API</h2>
+                <p>Interface para testar manualmente os endpoints REST da API através de botões de teste interativos.</p>
+                <a href="../api-testing.html" class="btn">� Abrir Centro de Testes</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <span class="icon">⚙️</span>
+            <h2>Como Regenerar a Documentação</h2>
+            <p>Para atualizar a documentação automaticamente após mudanças no código:</p>
+            <div class="command">.\docs-generate.bat</div>
+            <p>Este processo irá:</p>
+            <ul style="margin-left: 20px; color: #666;">
+                <li>Gerar novo Javadoc com Maven</li>
+                <li>Copiar para a pasta de documentação</li>
+                <li>Atualizar esta página principal</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>❤️ Gerado automaticamente pelo sistema de documentação</p>
+        </div>
+    </div>
+</body>
+</html>

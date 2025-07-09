@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  booking-db:
+    image: mysql:8.0
+    container_name: booking-db-prod
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: bookingdb_prod
+    ports:
+      - "3308:3306"
+    networks:
+      - hotel-network-prod
+    volumes:
+      - booking_db_prod_data:/var/lib/mysql
+    restart: unless-stopped
+
+  auth-db:
+    image: postgres:15
+    container_name: auth-db-prod
+    environment:
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+      POSTGRES_DB: authdb_prod
+    ports:
+      - "5433:5432"
+    networks:
+      - hotel-network-prod
+    volumes:
+      - auth_db_prod_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  auth-service:
+    image: ${DOCKER_REGISTRY}/auth-service:${APP_VERSION}
+    container_name: auth-service-prod
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_HOST=auth-db
+      - DB_DATABASE=authdb_prod
+      - DB_PASSWORD=${AUTH_DB_PASSWORD}
+    expose:
+      - "80"
+    depends_on:
+      - auth-db
+    networks:
+      - hotel-network-prod
+    restart: unless-stopped
+
+  booking-service:
+    image: ${DOCKER_REGISTRY}/booking-service:${APP_VERSION}
+    container_name: booking-service-prod
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_HOST=booking-db
+      - DB_DATABASE=bookingdb_prod
+      - DB_PASSWORD=${DB_ROOT_PASSWORD}
+    expose:
+      - "80"
+    depends_on:
+      - booking-db  
+    networks:
+      - hotel-network-prod
+    restart: unless-stopped
+
+  billing-service:
+    image: ${DOCKER_REGISTRY}/billing-service:${APP_VERSION}
+    container_name: billing-service-prod
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+    expose:
+      - "8083"
+    networks:
+      - hotel-network-prod
+    restart: unless-stopped
+
+  api-gateway:
+    image: nginx:latest
+    container_name: api-gateway-prod
+    ports:
+      - "80:8080"
+    volumes:
+      - ./api-gateway-java/src/main/resources/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - booking-service
+      - billing-service
+    networks:
+      - hotel-network-prod
+    restart: unless-stopped
+
+networks:
+  hotel-network-prod:
+    driver: bridge
+
+volumes:
+  booking_db_prod_data:
+  auth_db_prod_data:
