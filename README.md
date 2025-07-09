@@ -3,7 +3,15 @@
 Este projeto possui **documentação automática** que é gerada dinamicamente a partir do código:
 
 ### 🎯 O que é gerado automaticamente:
-- **📖 Javadoc** - Documentação completa do código Java (classes, métodos, parâmetros)
+- **📖 Javadoc** - Documentação completa do código Java (classes, métodos, pa#### 🎯 **#### 🏷️ **Tags das imagens:**
+- `hotel-checkin-system/auth-service:latest`
+- `hotel-checkin-system/booking-service:latest`
+- `hotel-checkin-system/billing-service:latest`
+- `hotel-checkin-system/api-gateway:latest`que serve DockerHub:**
+- **🌐 Registry público** - Distribuição externa de imagens
+- **🚀 Deploy produção** - Pull de imagens em servidores remotos
+- **🔄 CI/CD** - Automação de deploy via Jenkins
+- **📦 Versionamento** - Tags automáticas por buildros)
 - **📋 Interface Web** - Página principal moderna para acessar toda documentação
 - **🧪 Centro de Testes** - Interface para testar APIs manualmenteeck-in e Check-out de Hotel
 
@@ -150,7 +158,299 @@ URL: http://localhost:9093
 - ✅ **Scripts** - Automatização de deploy e configuração
 - ✅ **Jenkins** - Pipeline de CI/CD configurado
 - ✅ **SonarQube** - Análise de qualidade de código
+- ✅ **DockerHub** - Registry para imagens Docker
+- ✅ **Nexus** - Artifact repository management
 - ✅ **Multi-ambiente** - Desenvolvimento, produção e análise
+
+---
+
+## 🛠️ DevOps Tools & Artifact Management
+
+### 📦 **Nexus Repository Manager**
+Artifact repository **privado** para gerenciamento centralizado de dependências e artefatos internos.
+
+#### 🎯 **Para que serve Nexus:**
+- **📦 Cache Maven** - Acelera builds (download de dependências)
+- **🏢 Artefatos internos** - JAR/WAR da sua organização
+- **🐳 Registry Docker** - Imagens Docker internas/desenvolvimento
+- **🔒 Controle acesso** - Repositórios corporativos privados
+- **⚡ Performance** - Cache local de dependências externas
+
+#### 🚀 **Iniciar Nexus:**
+```bash
+# Subir Nexus Repository
+docker-compose -f docker-compose.nexus.yml up -d
+
+# Acessar: http://localhost:8081
+# Login inicial: admin / (senha em logs)
+docker-compose -f docker-compose.nexus.yml logs nexus | findstr password
+```
+
+#### 📦 **Repositórios configurados:**
+- **Maven Central** (proxy) - Cache do Maven Central
+- **Maven Releases** (hosted) - Artefatos finais da empresa
+- **Maven Snapshots** (hosted) - Builds desenvolvimento
+- **Docker Registry** (hosted) - Imagens Docker internas
+
+#### ⚙️ **Configuração Maven (pom.xml):**
+```xml
+<!-- Cache de dependências via Nexus -->
+<repositories>
+    <repository>
+        <id>nexus-public</id>
+        <url>http://localhost:8081/repository/maven-public/</url>
+    </repository>
+</repositories>
+
+<!-- Deploy de artefatos internos no Nexus -->
+<distributionManagement>
+    <repository>
+        <id>nexus-releases</id>
+        <url>http://localhost:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>http://localhost:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+
+#### 🐳 **Docker Registry no Nexus:**
+```bash
+# Push imagem para Nexus (desenvolvimento/teste)
+docker tag billing-service localhost:8081/hotel/billing-service:dev
+docker push localhost:8081/hotel/billing-service:dev
+
+# Pull imagem do Nexus
+docker pull localhost:8081/hotel/billing-service:dev
+```
+
+---
+
+### 📊 **SonarQube - Code Quality Analysis**
+Sistema de análise estática de código para detectar bugs, vulnerabilidades e code smells.
+
+#### 🚀 **Como iniciar SonarQube:**
+```bash
+# Iniciar SonarQube com PostgreSQL
+docker-compose -f docker-compose.sonar.yml up -d
+
+# Verificar se está funcionando
+docker logs sonarqube
+```
+
+#### 🌐 **Acessar SonarQube:**
+```
+URL: http://localhost:9000
+Usuário: admin
+Senha: admin
+```
+
+#### 📊 **Executar análise manualmente:**
+```bash
+# Para projetos Java (billing-service e api-gateway)
+cd billing-service-java
+mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
+
+cd ../api-gateway-java
+mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
+```
+
+#### 🔧 **Configuração automática no pom.xml:**
+```xml
+<properties>
+    <sonar.projectKey>hotel-checkin-billing</sonar.projectKey>
+    <sonar.organization>hotel-systems</sonar.organization>
+    <sonar.host.url>http://localhost:9000</sonar.host.url>
+</properties>
+```
+
+---
+
+### 🐳 **DockerHub Integration**
+Registry **público** para armazenamento e distribuição de imagens Docker.
+
+#### � **Para que serve DockerHub:**
+- **🌐 Registry público** - Distribuição externa de imagens
+- **🚀 Deploy produção** - Pull de imagens em servidores remotos
+- **🔄 CI/CD** - Automação de deploy via Jenkins
+- **📦 Versionamento** - Tags automáticas por build
+
+#### �🏷️ **Tags das imagens:**
+- `hotel-checkin-system/auth-service:latest`
+- `hotel-checkin-system/booking-service:latest`
+- `hotel-checkin-system/billing-service:latest`
+- `hotel-checkin-system/api-gateway:latest`
+
+#### 📤 **Push manual para DockerHub:**
+```bash
+# Build e push da imagem
+docker build -t hotel-checkin-system/billing-service:latest ./billing-service-java
+docker push hotel-checkin-system/billing-service:latest
+
+# Para todos os serviços
+docker-compose build
+docker-compose push
+```
+
+#### ⚙️ **Jenkins Pipeline:**
+O Jenkinsfile já está configurado para:
+- ✅ Build automático das imagens
+- ✅ Push para DockerHub em branches main/develop
+- ✅ Versionamento automático (BUILD_NUMBER-GIT_COMMIT)
+- ✅ Tag 'latest' para branch main
+
+---
+
+## 🔄 **Nexus vs DockerHub - Diferenças e Quando Usar**
+
+### 📊 **Comparação Detalhada:**
+
+| Característica | 🏛️ **Nexus Repository** | 🐳 **DockerHub** |
+|---|---|---|
+| **🎯 Propósito** | Artifact Repository **Privado** | Registry Docker **Público** |
+| **📦 Artefatos** | JAR, WAR, ZIP, Docker, NPM, NuGet | **Apenas** imagens Docker |
+| **🔒 Acesso** | **Interno** (empresa/projeto) | **Externo** (distribuição) |
+| **💰 Custo** | **Gratuito** (self-hosted) | Limitações no plano gratuito |
+| **🏢 Ambiente** | **Desenvolvimento/Corporativo** | **Produção/Deploy** |
+| **🔐 Privacidade** | **100% Privado** | Repositórios públicos/privados |
+
+### 🎯 **Quando usar NEXUS:**
+```
+✅ Desenvolvimento interno
+✅ Artefatos Maven (JAR/WAR)
+✅ Cache de dependências
+✅ Repositórios corporativos
+✅ Controle total de acesso
+✅ Imagens Docker internas/teste
+```
+
+### 🎯 **Quando usar DOCKERHUB:**
+```
+✅ Deploy em produção
+✅ Distribuição externa
+✅ CI/CD automático
+✅ Pull em servidores remotos
+✅ Versionamento público
+✅ Integração com orquestradores
+```
+
+### 🏗️ **Fluxo Recomendado (AMBOS):**
+```
+1. 🔧 Desenvolvimento → Nexus (artefatos internos)
+2. 🏗️ Build Maven → Nexus (JAR/WAR)
+3. 🐳 Build Docker → Nexus (teste interno)
+4. ✅ CI/CD Pipeline → DockerHub (produção)
+5. 🚀 Deploy Produção → Pull do DockerHub
+```
+
+### ⚙️ **Configuração COMPLEMENTAR:**
+```bash
+# 1. Maven artifacts → Nexus (desenvolvimento)
+mvn deploy  # → http://localhost:8081/repository/maven-releases/
+
+# 2. Docker images → Nexus (teste interno)
+docker tag billing-service localhost:8081/hotel/billing-service:dev
+docker push localhost:8081/hotel/billing-service:dev
+
+# 3. Docker images → DockerHub (produção)
+docker tag billing-service hotel-checkin-system/billing-service:latest
+docker push hotel-checkin-system/billing-service:latest
+```
+
+---
+
+## 🏭 **Cenários Práticos de Uso - DevOps Pipeline**
+
+### 🎯 **Cenário 1: Desenvolvimento Local**
+```bash
+# Desenvolvedor trabalhando localmente
+1. mvn clean compile → Cache dependências do Nexus
+2. docker build → Imagem local para teste
+3. docker tag → localhost:8081/hotel/service:dev
+4. docker push → Nexus (compartilhar com equipe)
+```
+
+### 🎯 **Cenário 2: Pipeline CI/CD (Jenkins)**
+```bash
+# Build automático no Jenkins
+1. git push → Trigger Jenkins
+2. mvn test → SonarQube analysis
+3. mvn package → Deploy JAR no Nexus
+4. docker build → Criar imagem Docker
+5. docker push → DockerHub (produção)
+```
+
+### 🎯 **Cenário 3: Deploy Produção**
+```bash
+# Servidor de produção
+1. docker pull hotel-checkin-system/billing-service:latest
+2. docker run → Execução em produção
+3. Grafana → Monitoramento em tempo real
+```
+
+### 🎯 **Cenário 4: Análise de Qualidade**
+```bash
+# Code Review e Quality Gates
+1. SonarQube → Análise automática
+2. Quality Gate → Aprovação/Rejeição
+3. Métricas → Coverage, Bugs, Vulnerabilities
+```
+
+### 📋 **RECOMENDAÇÃO para seu projeto:**
+```
+📋 MANTENHA TODAS AS FERRAMENTAS - são complementares!
+
+🏛️ Nexus: Cache Maven + Artefatos internos + Docker dev
+🐳 DockerHub: Deploy produção + Distribuição externa
+📊 SonarQube: Qualidade código + Security + Coverage
+📈 Grafana: Monitoramento + Métricas + Alertas
+
+📖 **Para mais detalhes:** [DevOps Guide Completo](docs/DEVOPS-GUIDE.md)
+```
+
+---
+
+### 🔄 **Ambiente Completo DevOps:**
+```bash
+# Iniciar stack completa (aplicação + monitoramento + qualidade + artefatos)
+docker-compose \
+  -f docker-compose.dev.yml \
+  -f docker-compose.monitoring.yml \
+  -f docker-compose.sonar.yml \
+  -f docker-compose.nexus.yml \
+  up -d
+
+# URLs das ferramentas
+echo "Aplicação: http://localhost:8080"
+echo "Grafana: http://localhost:3000"
+echo "Prometheus: http://localhost:9090"
+echo "SonarQube: http://localhost:9000"
+echo "Nexus: http://localhost:8081"
+echo "Jenkins: http://localhost:8082" # Se configurado
+```
+
+### 📊 **URLs das Ferramentas DevOps:**
+
+#### 📦 **Nexus Repository**
+```
+URL: http://localhost:8081
+Usuário: admin
+Senha: (ver logs do container)
+```
+
+#### 📊 **SonarQube**
+```
+URL: http://localhost:9000
+Usuário: admin
+Senha: admin
+```
+
+#### 🐳 **DockerHub**
+```
+Registry: docker.io/hotel-checkin-system/
+Imagens: auth-service, booking-service, billing-service, api-gateway
+```
 
 ### 🏨 Aplicação Hoteleira:
 - ✅ **Auth Service** - Autenticação e autorização
@@ -168,6 +468,7 @@ URL: http://localhost:9093
 - **Produção:** `docker-compose.prod.yml` 
 - **Monitoramento:** `docker-compose.monitoring.yml`
 - **Análise de código:** `docker-compose.sonar.yml`
+- **Artifact Management:** `docker-compose.nexus.yml`
 
 ### Instalação
 #### Pré-requisitos
