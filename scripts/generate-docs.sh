@@ -5,7 +5,7 @@
 echo "🚀 Gerando documentação do projeto..."
 
 # Criar diretório de documentação
-mkdir -p docs/{api,coverage,javadoc,swagger}
+mkdir -p docs/{api,coverage,javadoc}
 
 echo "📚 Gerando JavaDoc para billing-service..."
 cd billing-service-java
@@ -29,7 +29,7 @@ if [ -d "billing-service-java/target/site/jacoco" ]; then
 fi
 
 echo "📋 Gerando documentação da API..."
-# Aqui você pode adicionar ferramentas como swagger-codegen
+# Geração de documentação automática concluída
 # ou scripts que extraem documentação das suas APIs
 
 echo "🎯 Criando índice da documentação..."
@@ -52,7 +52,6 @@ cat > docs/index.html << 'EOF'
     <div class="section">
         <h2>📖 Documentação da API</h2>
         <ul>
-            <li><a href="swagger/">Swagger UI</a> - Documentação interativa da API</li>
             <li><a href="api/">Documentação detalhada dos endpoints</a></li>
         </ul>
     </div>

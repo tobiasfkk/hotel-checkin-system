@@ -1,10 +1,56 @@
-# Sistema de Check-in e Check-out de Hotel
+# Sist## 📚 Documentação Automática (Javadoc)
+
+Este projeto possui **documentação automática** que é gerada dinamicamente a partir do código:
+
+### 🎯 O que é gerado automaticamente:
+- **📖 Javadoc** - Documentação completa do código Java (classes, métodos, parâmetros)
+- **📋 Interface Web** - Página principal moderna para acessar toda documentação
+- **🧪 Centro de Testes** - Interface para testar APIs manualmenteeck-in e Check-out de Hotel
 
 Link projeto GitHub: [clique aqui](https://github.com/tobiasfkk/hotel-checkin-system)
 
 Link documentação do projeto: [clique aqui](https://docs.google.com/document/d/1m9LEzCmzR_oC7NxS5YKpZn0MdXIGspTrQjg9MrLaiks/edit?usp=sharing)
 
-## 📊 Sistema de Monitoramento com Grafana
+## 📚 Documentação Automática (Javadoc)
+
+Este projeto possui **documentação automática** que é gerada dinamicamente a partir do código:
+
+### 🎯 O que é gerado automaticamente:
+- **📖 Javadoc** - Documentação completa do código Java (classes, métodos, parâmetros)
+- **� Interface Web** - Página principal moderna para acessar toda documentação
+- **🧪 Centro de Testes** - Interface para testar APIs manualmente
+
+### 🚀 Como gerar a documentação:
+```bash
+# Execute o script de geração automática
+.\docs-generate.bat
+```
+
+### 🌐 Como visualizar:
+```bash
+# Abrir automaticamente no navegador
+start docs\final\index.html
+```
+
+**Ou acesse diretamente:**
+- **Página Principal**: `docs/final/index.html`
+- **Javadoc**: `docs/final/javadoc/index.html`
+- **Centro de Testes**: `docs/api-testing.html`
+
+### ⚙️ Como funciona:
+1. **Maven gera Javadoc** automaticamente a partir dos comentários no código
+2. **Script copia e organiza** toda documentação em uma interface única
+3. **Documentação fica sempre atualizada** com o código atual
+
+### 🔄 Regenerar após mudanças:
+Sempre que fizer alterações no código, execute novamente:
+```bash
+.\docs-generate.bat
+```
+
+---
+
+## �📊 Sistema de Monitoramento com Grafana
 
 Este projeto inclui um **sistema de monitoramento profissional** usando Grafana, que permite visualizar em tempo real a performance e saúde dos serviços.
 
@@ -27,6 +73,91 @@ Senha: admin123
 - **Atualizações:** Automáticas a cada 30 segundos
 
 > **📖 Guia Completo:** Veja o arquivo [GUIA-GRAFANA.md](./GUIA-GRAFANA.md) para instruções detalhadas de uso.
+
+### 🔧 Stack Completo de Monitoramento:
+- **📈 Grafana** - Dashboards interativos e visualização
+- **📊 Prometheus** - Coleta e armazenamento de métricas
+- **🐳 cAdvisor** - Monitoramento de containers Docker
+- **💻 Node Exporter** - Métricas do sistema operacional
+- **🔔 Alertmanager** - Sistema de alertas automáticos
+
+### 🎯 Métricas Monitoradas:
+- **🖥️ Sistema** - CPU, memória, disco, rede
+- **🐳 Containers** - Status, recursos, logs
+- **☕ Java Apps** - JVM, heap, threads, GC
+- **🗄️ Database** - Conexões, queries, performance
+- **🌐 APIs** - Tempo resposta, throughput, erros
+
+### 🚀 Iniciar Monitoramento Completo:
+```bash
+# Ambiente completo (aplicação + monitoramento)
+docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.yml up --build -d
+
+# Apenas ferramentas de monitoramento
+docker-compose -f docker-compose.monitoring.yml up --build -d
+```
+
+### 🌐 URLs das Ferramentas:
+
+#### 📊 Prometheus - Métricas
+```
+URL: http://localhost:9090
+```
+
+#### 🔔 Alertmanager - Alertas
+```
+URL: http://localhost:9093
+```
+
+### ⚡ Alertas Automáticos:
+- **🚨 CPU > 80%** por 5+ minutos
+- **💾 RAM > 90%** utilizada
+- **💿 Disco > 85%** cheio
+- **🐳 Container down** ou não respondendo
+- **🌐 API > 2s** tempo de resposta
+
+### 📊 Dashboards Disponíveis:
+- **🏨 Hotel Overview** - http://localhost:3000/d/hotel-overview
+- **🐳 Docker Status** - http://localhost:3000/d/docker
+- **💻 System Resources** - http://localhost:3000/d/system
+- **📱 Application Health** - http://localhost:3000/d/apps
+
+### 🔄 Características:
+- **⚡ Tempo Real** - Atualizações a cada 15s
+- **📈 Histórico** - 30 dias de retenção
+- **🔔 Alertas** - Notificações automáticas
+- **📊 Dashboards** - Interface responsiva
+
+---
+
+## 🎯 Resumo das Funcionalidades Implementadas
+
+### 📚 Documentação Automática:
+- ✅ **Javadoc** - Documentação do código Java gerada automaticamente
+- ✅ **Interface Web** - Página centralizada para toda documentação
+- ✅ **Centro de Testes** - Interface para testar APIs manualmente
+- ✅ **Script automatizado** - `.\docs-generate.bat` para regenerar
+
+### 📊 Monitoramento Profissional:
+- ✅ **Grafana** - Dashboards interativos de métricas
+- ✅ **Prometheus** - Coleta de métricas em tempo real
+- ✅ **Alertas** - Sistema automático de notificações
+- ✅ **Multi-layer** - Sistema, containers, aplicações, APIs
+- ✅ **Dashboards** - Customizados para hotel (check-ins, reservas)
+
+### 🔧 DevOps & Automação:
+- ✅ **Docker Compose** - Múltiplos ambientes (dev, prod, monitoring)
+- ✅ **Scripts** - Automatização de deploy e configuração
+- ✅ **Jenkins** - Pipeline de CI/CD configurado
+- ✅ **SonarQube** - Análise de qualidade de código
+- ✅ **Multi-ambiente** - Desenvolvimento, produção e análise
+
+### 🏨 Aplicação Hoteleira:
+- ✅ **Auth Service** - Autenticação e autorização
+- ✅ **Booking Service** - Gestão de reservas e check-in/out
+- ✅ **Billing Service** - Cálculo de valores e faturamento
+- ✅ **Database** - MySQL com migrations e seeders
+- ✅ **APIs REST** - Endpoints documentados e testáveis
 
 ---
 

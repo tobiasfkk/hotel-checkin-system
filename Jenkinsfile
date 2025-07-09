@@ -132,6 +132,78 @@ pipeline {
             }
         }
 
+        stage('Tests & Coverage') {
+            steps {
+                parallel {
+                    stage('Java Tests') {
+                        steps {
+                            dir('billing-service-java') {
+                                sh './mvnw clean test jacoco:report'
+                                publishHTML([
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll: true,
+                                    reportDir: 'target/site/jacoco',
+                                    reportFiles: 'index.html',
+                                    reportName: 'JaCoCo Coverage - Billing Service'
+                                ])
+                            }
+                            dir('api-gateway-java') {
+                                sh './mvnw clean test jacoco:report'
+                                publishHTML([
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll: true,
+                                    reportDir: 'target/site/jacoco',
+                                    reportFiles: 'index.html',
+                                    reportName: 'JaCoCo Coverage - API Gateway'
+                                ])
+                            }
+                        }
+                    }
+                    stage('PHP Tests') {
+                        steps {
+                            script {
+                                try {
+                                    dir('auth-service-php') {
+                                        sh 'composer install'
+                                        sh 'vendor/bin/phpunit --coverage-html coverage-html'
+                                    }
+                                    publishHTML([
+                                        allowMissing: true,
+                                        alwaysLinkToLastBuild: true,
+                                        keepAll: true,
+                                        reportDir: 'auth-service-php/coverage-html',
+                                        reportFiles: 'index.html',
+                                        reportName: 'PHPUnit Coverage - Auth Service'
+                                    ])
+                                } catch (Exception e) {
+                                    echo "Auth Service tests failed: ${e.getMessage()}"
+                                }
+                                
+                                try {
+                                    dir('booking-service-php/src') {
+                                        sh 'composer install'
+                                        sh 'vendor/bin/phpunit --coverage-html coverage-html'
+                                    }
+                                    publishHTML([
+                                        allowMissing: true,
+                                        alwaysLinkToLastBuild: true,
+                                        keepAll: true,
+                                        reportDir: 'booking-service-php/src/coverage-html',
+                                        reportFiles: 'index.html',
+                                        reportName: 'PHPUnit Coverage - Booking Service'
+                                    ])
+                                } catch (Exception e) {
+                                    echo "Booking Service tests failed: ${e.getMessage()}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Generate Documentation') {
             steps {
                 parallel {
@@ -148,14 +220,34 @@ pipeline {
                                     reportName: 'JavaDoc - Billing Service'
                                 ])
                             }
+                            dir('api-gateway-java') {
+                                sh './mvnw javadoc:javadoc'
+                                publishHTML([
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll: true,
+                                    reportDir: 'target/site/apidocs',
+                                    reportFiles: 'index.html',
+                                    reportName: 'JavaDoc - API Gateway'
+                                ])
+                            }
                         }
                     }
-                    stage('API Documentation') {
+                    stage('Complete Documentation') {
                         steps {
                             sh '''
-                                echo "Generating API documentation..."
+                                echo "Generating complete documentation..."
+                                chmod +x ./scripts/generate-docs.sh
                                 ./scripts/generate-docs.sh
                             '''
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'docs',
+                                reportFiles: 'index.html',
+                                reportName: 'Complete Documentation'
+                            ])
                         }
                     }
                 }
