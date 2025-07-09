@@ -562,7 +562,12 @@ docker-compose up --build -d
 
 ### Testar Jenkins
 #### Rodar conteiner Docker com Jenkins
-    docker run -d --name jenkins -p 8081:8080 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+    docker run -d --name jenkins -p 8081:8080 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --user root jenkins/jenkins:lts
+#### Permitir uso do Docker no Jenkins
+    docker exec -u root -it jenkins apt-get update
+    docker exec -u root -it jenkins apt-get install -y docker.io
+    docker exec -u root -it jenkins usermod -aG docker jenkins
+    docker restart jenkins
 #### Obter senha Jenkins
     docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ### Após isso:
