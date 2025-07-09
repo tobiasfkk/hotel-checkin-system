@@ -3,16 +3,10 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials-id')
-        DOCKER_IMAGE_PREFIX = 'hotelcheckin'
+        DOCKER_IMAGE_PREFIX = 'hotel-checkin-system'
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/tobiasfkk/hotel-checkin-system.git'
-            }
-        }
-
         stage('Build & Test - Auth (Laravel)') {
             steps {
                 dir('auth-service-php') {
