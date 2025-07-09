@@ -3,20 +3,21 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_PREFIX = 'doege/hotel-checkin-system'
+        DOCKER_ENV = 'dev'
     }
 
     stages {
         stage('Build & Test - Auth (Laravel)') {
             steps {
                 dir('auth-service-php') {
-                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:auth-service .'
+                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:auth-service-$DOCKER_ENV .'
                 }
             }
         }
         stage('Build & Test - Booking (Laravel)') {
             steps {
                 dir('booking-service-php') {
-                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:booking-service .'
+                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:booking-service-$DOCKER_ENV .'
                 }
             }
         }
@@ -25,7 +26,7 @@ pipeline {
                 dir('billing-service-java') {
                     sh 'chmod +x mvnw'
                     sh './mvnw clean package -DskipTests'
-                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:billing-service .'
+                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:billing-service-$DOCKER_ENV .'
                 }
             }
         }
@@ -34,7 +35,7 @@ pipeline {
                 dir('api-gateway-java') {
                     sh 'chmod +x mvnw'
                     sh './mvnw clean package -DskipTests'
-                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:api-gateway .'
+                    sh 'docker build -t $DOCKER_IMAGE_PREFIX:api-gateway-$DOCKER_ENV .'
                 }
             }
         }
@@ -42,10 +43,10 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                    sh 'docker push $DOCKER_IMAGE_PREFIX:auth-service'
-                    sh 'docker push $DOCKER_IMAGE_PREFIX:booking-service'
-                    sh 'docker push $DOCKER_IMAGE_PREFIX:billing-service'
-                    sh 'docker push $DOCKER_IMAGE_PREFIX:api-gateway'
+                    sh 'docker push $DOCKER_IMAGE_PREFIX:auth-service-$DOCKER_ENV'
+                    sh 'docker push $DOCKER_IMAGE_PREFIX:booking-service-$DOCKER_ENV'
+                    sh 'docker push $DOCKER_IMAGE_PREFIX:billing-service-$DOCKER_ENV'
+                    sh 'docker push $DOCKER_IMAGE_PREFIX:api-gateway-$DOCKER_ENV'
                     sh 'docker logout'
                 }
             }
