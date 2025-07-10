@@ -96,15 +96,6 @@ Senha: admin123
 - **🗄️ Database** - Conexões, queries, performance
 - **🌐 APIs** - Tempo resposta, throughput, erros
 
-### 🚀 Iniciar Monitoramento Completo:
-```bash
-# Ambiente completo (aplicação + monitoramento)
-docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.yml up --build -d
-
-# Apenas ferramentas de monitoramento
-docker-compose -f docker-compose.monitoring.yml up --build -d
-```
-
 ### 🌐 URLs das Ferramentas:
 
 #### 📊 Prometheus - Métricas
@@ -164,109 +155,6 @@ URL: http://localhost:9093
 
 ---
 
-## 🛠️ DevOps Tools & Artifact Management
-
-### 📦 **Nexus Repository Manager**
-Artifact repository **privado** para gerenciamento centralizado de dependências e artefatos internos.
-
-#### 🎯 **Para que serve Nexus:**
-- **📦 Cache Maven** - Acelera builds (download de dependências)
-- **🏢 Artefatos internos** - JAR/WAR da sua organização
-- **🐳 Registry Docker** - Imagens Docker internas/desenvolvimento
-- **🔒 Controle acesso** - Repositórios corporativos privados
-- **⚡ Performance** - Cache local de dependências externas
-
-#### 🚀 **Iniciar Nexus:**
-```bash
-# Subir Nexus Repository
-docker-compose -f docker-compose.nexus.yml up -d
-
-# Acessar: http://localhost:8081
-# Login inicial: admin / (senha em logs)
-docker-compose -f docker-compose.nexus.yml logs nexus | findstr password
-```
-
-#### 📦 **Repositórios configurados:**
-- **Maven Central** (proxy) - Cache do Maven Central
-- **Maven Releases** (hosted) - Artefatos finais da empresa
-- **Maven Snapshots** (hosted) - Builds desenvolvimento
-- **Docker Registry** (hosted) - Imagens Docker internas
-
-#### ⚙️ **Configuração Maven (pom.xml):**
-```xml
-<!-- Cache de dependências via Nexus -->
-<repositories>
-    <repository>
-        <id>nexus-public</id>
-        <url>http://localhost:8081/repository/maven-public/</url>
-    </repository>
-</repositories>
-
-<!-- Deploy de artefatos internos no Nexus -->
-<distributionManagement>
-    <repository>
-        <id>nexus-releases</id>
-        <url>http://localhost:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-        <id>nexus-snapshots</id>
-        <url>http://localhost:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
-```
-
-#### 🐳 **Docker Registry no Nexus:**
-```bash
-# Push imagem para Nexus (desenvolvimento/teste)
-docker tag billing-service localhost:8081/hotel/billing-service:dev
-docker push localhost:8081/hotel/billing-service:dev
-
-# Pull imagem do Nexus
-docker pull localhost:8081/hotel/billing-service:dev
-```
-
----
-
-### 📊 **SonarQube - Code Quality Analysis**
-Sistema de análise estática de código para detectar bugs, vulnerabilidades e code smells.
-
-#### 🚀 **Como iniciar SonarQube:**
-```bash
-# Iniciar SonarQube com PostgreSQL
-docker-compose -f docker-compose.sonar.yml up -d
-
-# Verificar se está funcionando
-docker logs sonarqube
-```
-
-#### 🌐 **Acessar SonarQube:**
-```
-URL: http://localhost:9000
-Usuário: admin
-Senha: admin
-```
-
-#### 📊 **Executar análise manualmente:**
-```bash
-# Para projetos Java (billing-service e api-gateway)
-cd billing-service-java
-mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
-
-cd ../api-gateway-java
-mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
-```
-
-#### 🔧 **Configuração automática no pom.xml:**
-```xml
-<properties>
-    <sonar.projectKey>hotel-checkin-billing</sonar.projectKey>
-    <sonar.organization>hotel-systems</sonar.organization>
-    <sonar.host.url>http://localhost:9000</sonar.host.url>
-</properties>
-```
-
----
-
 ### 🐳 **DockerHub Integration**
 Registry **público** para armazenamento e distribuição de imagens Docker.
 
@@ -291,71 +179,6 @@ docker push hotel-checkin-system/billing-service:latest
 # Para todos os serviços
 docker-compose build
 docker-compose push
-```
-
-#### ⚙️ **Jenkins Pipeline:**
-O Jenkinsfile já está configurado para:
-- ✅ Build automático das imagens
-- ✅ Push para DockerHub em branches main/develop
-- ✅ Versionamento automático (BUILD_NUMBER-GIT_COMMIT)
-- ✅ Tag 'latest' para branch main
-
----
-
-## 🔄 **Nexus vs DockerHub - Diferenças e Quando Usar**
-
-### 📊 **Comparação Detalhada:**
-
-| Característica | 🏛️ **Nexus Repository** | 🐳 **DockerHub** |
-|---|---|---|
-| **🎯 Propósito** | Artifact Repository **Privado** | Registry Docker **Público** |
-| **📦 Artefatos** | JAR, WAR, ZIP, Docker, NPM, NuGet | **Apenas** imagens Docker |
-| **🔒 Acesso** | **Interno** (empresa/projeto) | **Externo** (distribuição) |
-| **💰 Custo** | **Gratuito** (self-hosted) | Limitações no plano gratuito |
-| **🏢 Ambiente** | **Desenvolvimento/Corporativo** | **Produção/Deploy** |
-| **🔐 Privacidade** | **100% Privado** | Repositórios públicos/privados |
-
-### 🎯 **Quando usar NEXUS:**
-```
-✅ Desenvolvimento interno
-✅ Artefatos Maven (JAR/WAR)
-✅ Cache de dependências
-✅ Repositórios corporativos
-✅ Controle total de acesso
-✅ Imagens Docker internas/teste
-```
-
-### 🎯 **Quando usar DOCKERHUB:**
-```
-✅ Deploy em produção
-✅ Distribuição externa
-✅ CI/CD automático
-✅ Pull em servidores remotos
-✅ Versionamento público
-✅ Integração com orquestradores
-```
-
-### 🏗️ **Fluxo Recomendado (AMBOS):**
-```
-1. 🔧 Desenvolvimento → Nexus (artefatos internos)
-2. 🏗️ Build Maven → Nexus (JAR/WAR)
-3. 🐳 Build Docker → Nexus (teste interno)
-4. ✅ CI/CD Pipeline → DockerHub (produção)
-5. 🚀 Deploy Produção → Pull do DockerHub
-```
-
-### ⚙️ **Configuração COMPLEMENTAR:**
-```bash
-# 1. Maven artifacts → Nexus (desenvolvimento)
-mvn deploy  # → http://localhost:8081/repository/maven-releases/
-
-# 2. Docker images → Nexus (teste interno)
-docker tag billing-service localhost:8081/hotel/billing-service:dev
-docker push localhost:8081/hotel/billing-service:dev
-
-# 3. Docker images → DockerHub (produção)
-docker tag billing-service hotel-checkin-system/billing-service:latest
-docker push hotel-checkin-system/billing-service:latest
 ```
 
 ---
@@ -396,19 +219,6 @@ docker push hotel-checkin-system/billing-service:latest
 2. Quality Gate → Aprovação/Rejeição
 3. Métricas → Coverage, Bugs, Vulnerabilities
 ```
-
-### 📋 **RECOMENDAÇÃO para seu projeto:**
-```
-📋 MANTENHA TODAS AS FERRAMENTAS - são complementares!
-
-🏛️ Nexus: Cache Maven + Artefatos internos + Docker dev
-🐳 DockerHub: Deploy produção + Distribuição externa
-📊 SonarQube: Qualidade código + Security + Coverage
-📈 Grafana: Monitoramento + Métricas + Alertas
-
-📖 **Para mais detalhes:** [DevOps Guide Completo](docs/DEVOPS-GUIDE.md)
-```
-
 ---
 
 ### 🔄 **Ambiente Completo DevOps (Branch DEV):**
@@ -508,10 +318,6 @@ Imagens: auth-service, booking-service, billing-service, api-gateway
 #### 🚀 **Branch PROD** (Produção)
 - **Arquivo único consolidado:** `docker-compose.prod.yml`
 - **Inclui:** Aplicações + Monitoramento essencial (configurações de produção)
-
-#### 📚 **Branch MASTER** (Documentação e referência)
-- **Mantém todos os arquivos separados** para referência e documentação
-- Arquivos individuais: `docker-compose.dev.yml`, `docker-compose.monitoring.yml`, `docker-compose.sonar.yml`, `docker-compose.nexus.yml`
 
 ### Instalação
 #### Pré-requisitos
