@@ -80,8 +80,6 @@ Senha: admin123
 - **Métricas disponíveis:** CPU, Memória, Status dos serviços, Containers Docker
 - **Atualizações:** Automáticas a cada 30 segundos
 
-> **📖 Guia Completo:** Veja o arquivo [GUIA-GRAFANA.md](./GUIA-GRAFANA.md) para instruções detalhadas de uso.
-
 ### 🔧 Stack Completo de Monitoramento:
 - **📈 Grafana** - Dashboards interativos e visualização
 - **📊 Prometheus** - Coleta e armazenamento de métricas
@@ -102,32 +100,6 @@ Senha: admin123
 ```
 URL: http://localhost:9090
 ```
-
-#### 🔔 Alertmanager - Alertas
-```
-URL: http://localhost:9093
-```
-
-### ⚡ Alertas Automáticos:
-- **🚨 CPU > 80%** por 5+ minutos
-- **💾 RAM > 90%** utilizada
-- **💿 Disco > 85%** cheio
-- **🐳 Container down** ou não respondendo
-- **🌐 API > 2s** tempo de resposta
-
-### 📊 Dashboards Disponíveis:
-- **🏨 Hotel Overview** - http://localhost:3000/d/hotel-overview
-- **🐳 Docker Status** - http://localhost:3000/d/docker
-- **💻 System Resources** - http://localhost:3000/d/system
-- **📱 Application Health** - http://localhost:3000/d/apps
-
-### 🔄 Características:
-- **⚡ Tempo Real** - Atualizações a cada 15s
-- **📈 Histórico** - 30 dias de retenção
-- **🔔 Alertas** - Notificações automáticas
-- **📊 Dashboards** - Interface responsiva
-
----
 
 ## 🎯 Resumo das Funcionalidades Implementadas
 
