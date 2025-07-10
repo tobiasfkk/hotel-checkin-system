@@ -8,12 +8,29 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+/**
+ * @group Autenticação
+ * Gerenciamento de autenticação de usuários.
+ */
 class AuthController extends Controller
 {
     /**
+     * @group Autenticação
      * Registra um novo usuário.
-     * @param Request $request
-     * @return JsonResponse
+     *
+     * Registra um usuário com nome, email, senha e papel (admin ou normal).
+     *
+     * @bodyParam name string required Nome do usuário. Example: João Silva
+     * @bodyParam email string required Email único do usuário. Example: joao@email.com
+     * @bodyParam password string required Senha com no mínimo 6 caracteres. Example: secret123
+     * @bodyParam role string required Papel do usuário. Valores válidos: admin, normal. Example: normal
+     *
+     * @response 201 {
+     *   "message": "Usuário criado com sucesso"
+     * }
+     * @response 422 {
+     *   "email": ["The email has already been taken."]
+     * }
      */
     public function register(Request $request)
     {
@@ -32,9 +49,22 @@ class AuthController extends Controller
     }
 
     /**
+     * @group Autenticação
      * Realiza o login do usuário.
-     * @param Request $request
-     * @return JsonResponse
+     *
+     * Retorna token JWT para autenticação nas demais rotas.
+     *
+     * @bodyParam email string required Email do usuário. Example: joao@email.com
+     * @bodyParam password string required Senha do usuário. Example: secret123
+     *
+     * @response 200 {
+     *   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+     *   "token_type": "bearer",
+     *   "expires_in": 3600
+     * }
+     * @response 401 {
+     *   "message": "Credenciais inválidas"
+     * }
      */
     public function login(Request $request)
     {
@@ -55,9 +85,23 @@ class AuthController extends Controller
     }
 
     /**
+     * @group Autenticação
      * Valida o token de autenticação do usuário.
-     * @param Request $request
-     * @return Response
+     *
+     * Verifica se o token JWT está válido e se o usuário tem permissão.
+     *
+     * @header X-Original-Method string Método HTTP original da requisição. Example: GET
+     *
+     * @response 204 - Sem conteúdo, token válido.
+     * @response 401 {
+     *   "message": "Usuário não encontrado"
+     * }
+     * @response 401 {
+     *   "message": "Acesso negado"
+     * }
+     * @response 401 {
+     *   "message": "Exception"
+     * }
      */
     public function validateToken(Request $request)
     {  

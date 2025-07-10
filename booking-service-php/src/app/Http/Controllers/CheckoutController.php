@@ -8,11 +8,29 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * @group Check-outs
+ * Gerenciamento de saídas de hóspedes.
+ */
 class CheckoutController extends Controller
 {
     /**
      * Lista todos os check-outs cadastrados.
-     * @return JsonResponse
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "checkin_id": 1,
+     *     "dataHoraSaida": "2025-07-11 12:00:00",
+     *     "valor": 300.00,
+     *     "checkin": {
+     *       "id": 1,
+     *       "reserva_id": 1,
+     *       "dataHoraEntrada": "2025-07-10 14:00:00",
+     *       "garagem": 1
+     *     }
+     *   }
+     * ]
      */
     public function index()
     {
@@ -27,8 +45,23 @@ class CheckoutController extends Controller
 
     /**
      * Cadastra um novo check-out.
-     * @param Request $request
-     * @return JsonResponse
+     *
+     * Calcula o valor automaticamente com base na permanência e uso de garagem.
+     *
+     * @bodyParam checkin_id integer required ID do check-in relacionado. Example: 1
+     * @bodyParam dataHoraSaida datetime required Data e hora da saída. Example: 2025-07-11 12:00:00
+     *
+     * @response 201 {
+     *   "message": "Check-out criado com sucesso",
+     *   "checkout": {
+     *     "checkin_id": 1,
+     *     "dataHoraSaida": "2025-07-11 12:00:00",
+     *     "valor": 300.00
+     *   }
+     * }
+     * @response 422 {
+     *   "message": "A data de check-out não pode ser anterior à data de check-in"
+     * }
      */
     public function store(Request $request)
     {
@@ -60,9 +93,21 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Exibe um check-out específico.  
-     * @param integer $checkinId
-     * @return JsonResponse
+     * Exibe um check-out específico.
+     *
+     * Retorna os dados do check-out com o check-in associado.
+     *
+     * @urlParam checkinId integer required ID do check-out. Example: 1
+     * @response 200 {
+     *   "id": 1,
+     *   "checkin_id": 1,
+     *   "dataHoraSaida": "2025-07-11 12:00:00",
+     *   "valor": 300.00,
+     *   "checkin": { ... }
+     * }
+     * @response 404 {
+     *   "message": "Check-out não encontrado"
+     * }
      */
     public function show($checkinId)
     {
@@ -77,9 +122,20 @@ class CheckoutController extends Controller
 
     /**
      * Atualiza um check-out.
-     * @param Request $request
-     * @param integer $checkinId
-     * @return JsonResponse
+     *
+     * Permite editar manualmente o valor, data ou o check-in relacionado.
+     *
+     * @urlParam checkinId integer required ID do check-out. Example: 1
+     * @bodyParam checkin_id integer ID do check-in relacionado. Example: 2
+     * @bodyParam dataHoraSaida datetime Data e hora da saída. Example: 2025-07-12 10:00:00
+     * @bodyParam valor number Valor manual do check-out. Example: 400.00
+     *
+     * @response 200 {
+     *   "message": "Check-out atualizado com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Check-out não encontrado"
+     * }
      */
     public function update(Request $request, $checkinId)
     {
@@ -101,9 +157,15 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Exclui um cadastro de Check-out.
-     * @param integer $checkinId
-     * @return JsonResponse
+     * Exclui um cadastro de check-out.
+     *
+     * @urlParam checkinId integer required ID do check-out. Example: 1
+     * @response 200 {
+     *   "message": "Check-out excluído com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Check-out não encontrado, registro não excluído"
+     * }
      */
     public function destroy($checkinId)
     {

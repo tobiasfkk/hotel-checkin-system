@@ -1,0 +1,376 @@
+name: Check-outs
+description: 'Gerenciamento de saídas de hóspedes.'
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/checkouts
+    metadata:
+      groupName: Check-outs
+      groupDescription: 'Gerenciamento de saídas de hóspedes.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Lista todos os check-outs cadastrados.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          [
+            {
+              "id": 1,
+              "checkin_id": 1,
+              "dataHoraSaida": "2025-07-11 12:00:00",
+              "valor": 300.00,
+              "checkin": {
+                "id": 1,
+                "reserva_id": 1,
+                "dataHoraEntrada": "2025-07-10 14:00:00",
+                "garagem": 1
+              }
+            }
+          ]
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/checkouts
+    metadata:
+      groupName: Check-outs
+      groupDescription: 'Gerenciamento de saídas de hóspedes.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cadastra um novo check-out.'
+      description: 'Calcula o valor automaticamente com base na permanência e uso de garagem.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      checkin_id:
+        name: checkin_id
+        description: 'ID do check-in relacionado.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraSaida:
+        name: dataHoraSaida
+        description: 'Data e hora da saída.'
+        required: true
+        example: '2025-07-11 12:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      checkin_id: 1
+      dataHoraSaida: '2025-07-11 12:00:00'
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Check-out criado com sucesso",
+            "checkout": {
+              "checkin_id": 1,
+              "dataHoraSaida": "2025-07-11 12:00:00",
+              "valor": 300.00
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "A data de check-out não pode ser anterior à data de check-in"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/checkouts/{id}'
+    metadata:
+      groupName: Check-outs
+      groupDescription: 'Gerenciamento de saídas de hóspedes.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exibe um check-out específico.'
+      description: 'Retorna os dados do check-out com o check-in associado.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkout.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      checkinId:
+        name: checkinId
+        description: 'ID do check-out.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      checkinId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "id": 1,
+            "checkin_id": 1,
+            "dataHoraSaida": "2025-07-11 12:00:00",
+            "valor": 300.00,
+            "checkin": { ... }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-out não encontrado"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/checkouts/{id}'
+    metadata:
+      groupName: Check-outs
+      groupDescription: 'Gerenciamento de saídas de hóspedes.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualiza um check-out.'
+      description: 'Permite editar manualmente o valor, data ou o check-in relacionado.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkout.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      checkinId:
+        name: checkinId
+        description: 'ID do check-out.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      checkinId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      checkin_id:
+        name: checkin_id
+        description: 'ID do check-in relacionado.'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraSaida:
+        name: dataHoraSaida
+        description: 'Data e hora da saída.'
+        required: false
+        example: '2025-07-12 10:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      valor:
+        name: valor
+        description: 'Valor manual do check-out.'
+        required: false
+        example: 400.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      checkin_id: 2
+      dataHoraSaida: '2025-07-12 10:00:00'
+      valor: 400.0
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Check-out atualizado com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-out não encontrado"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/checkouts/{id}'
+    metadata:
+      groupName: Check-outs
+      groupDescription: 'Gerenciamento de saídas de hóspedes.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exclui um cadastro de check-out.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkout.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      checkinId:
+        name: checkinId
+        description: 'ID do check-out.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      checkinId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Check-out excluído com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-out não encontrado, registro não excluído"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

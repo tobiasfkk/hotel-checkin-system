@@ -1,0 +1,376 @@
+name: Reservas
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/reservas
+    metadata:
+      groupName: Reservas
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Lista todas as reservas cadastradas.
+
+        Retorna todas as reservas com os dados da pessoa associada.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+             [
+               {
+                 "id": 1,
+                 "idPessoa": 2,
+                 "numeroQuarto": 101,
+                 "dataHoraInicio": "2025-07-12T14:00:00",
+                 "dataHoraFim": "2025-07-14T12:00:00",
+                 "pessoa": {
+                   "id": 2,
+                   "nome": "João da Silva",
+                   "cpf": "000.000.000-00",
+                   "telefone": "(11) 99999-0000"
+                 }
+               }
+             ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/reservas
+    metadata:
+      groupName: Reservas
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Cadastra uma nova reserva.
+
+        Verifica se o quarto está disponível nas datas informadas antes de cadastrar.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      idPessoa:
+        name: idPessoa
+        description: 'ID da pessoa.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      numeroQuarto:
+        name: numeroQuarto
+        description: 'Número do quarto.'
+        required: true
+        example: 203
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraInicio:
+        name: dataHoraInicio
+        description: 'Data/hora de entrada.'
+        required: true
+        example: '2025-07-15 14:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraFim:
+        name: dataHoraFim
+        description: 'Data/hora de saída.'
+        required: true
+        example: '2025-07-17 12:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      idPessoa: 1
+      numeroQuarto: 203
+      dataHoraInicio: '2025-07-15 14:00:00'
+      dataHoraFim: '2025-07-17 12:00:00'
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Reserva criada com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "O quarto não está disponível para as datas selecionadas"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/reservas/{id}'
+    metadata:
+      groupName: Reservas
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Exibe uma reserva específica.
+
+        Retorna a reserva com os dados da pessoa associada.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da reserva.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "id": 1,
+            "idPessoa": 1,
+            "numeroQuarto": 203,
+            "dataHoraInicio": "2025-07-15T14:00:00",
+            "dataHoraFim": "2025-07-17T12:00:00",
+            "pessoa": { ... }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Reserva não encontrada"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/reservas/{id}'
+    metadata:
+      groupName: Reservas
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Atualiza uma reserva.
+
+        Verifica disponibilidade antes de atualizar.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da reserva.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      numeroQuarto:
+        name: numeroQuarto
+        description: 'Número do quarto.'
+        required: false
+        example: 203
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraInicio:
+        name: dataHoraInicio
+        description: 'Data/hora de entrada.'
+        required: false
+        example: '2025-07-15 14:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraFim:
+        name: dataHoraFim
+        description: 'Data/hora de saída.'
+        required: false
+        example: '2025-07-17 12:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      numeroQuarto: 203
+      dataHoraInicio: '2025-07-15 14:00:00'
+      dataHoraFim: '2025-07-17 12:00:00'
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Reserva atualizada com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "O quarto não está disponível para as datas selecionadas"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/reservas/{id}'
+    metadata:
+      groupName: Reservas
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exclui uma reserva.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da reserva.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Reserva excluída com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Reserva não encontrada, registro não excluído"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

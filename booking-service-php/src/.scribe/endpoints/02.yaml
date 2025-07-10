@@ -1,0 +1,400 @@
+name: Check-ins
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/checkins
+    metadata:
+      groupName: Check-ins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Lista todos os check-ins cadastrados.
+
+        Retorna todos os check-ins com as reservas associadas.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            [
+              {
+                "id": 1,
+                "reserva_id": 1,
+                "dataHoraEntrada": "2025-07-10T14:00:00",
+                "garagem": 1,
+                "reserva": {
+                  "id": 1,
+                  "numeroQuarto": 101,
+                  "dataHoraInicio": "2025-07-10T14:00:00",
+                  "dataHoraFim": "2025-07-12T12:00:00"
+                }
+              }
+            ]
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/checkins
+    metadata:
+      groupName: Check-ins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Cadastra um novo check-in.
+
+        Verifica se a data de entrada está dentro do período da reserva.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reserva_id:
+        name: reserva_id
+        description: 'ID da reserva associada.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraEntrada:
+        name: dataHoraEntrada
+        description: 'Data e hora do check-in.'
+        required: true
+        example: '2025-07-10 14:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      garagem:
+        name: garagem
+        description: 'Indica se usará garagem: 0 (não), 1 (sim), 2 (vago).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      reserva_id: 1
+      dataHoraEntrada: '2025-07-10 14:00:00'
+      garagem: 1
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Check-in criado com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "message": "A data de check-in deve estar entre o início e final da Reserva"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/checkins/{id}'
+    metadata:
+      groupName: Check-ins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Exibe um check-in específico.
+
+        Mostra os dados do check-in com a reserva e o checkout vinculados.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkin.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      reservaId:
+        name: reservaId
+        description: 'ID do check-in.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      reservaId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "id": 1,
+            "reserva_id": 1,
+            "dataHoraEntrada": "2025-07-10T14:00:00",
+            "garagem": 1,
+            "reserva": { ... },
+            "checkout": { ... }
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-in não encontrado"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/checkins/{id}'
+    metadata:
+      groupName: Check-ins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Atualiza um check-in.
+
+        Permite modificar os dados do check-in.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkin.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      reservaId:
+        name: reservaId
+        description: 'ID do check-in.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      reservaId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      reserva_id:
+        name: reserva_id
+        description: 'ID da reserva associada.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      dataHoraEntrada:
+        name: dataHoraEntrada
+        description: 'Data e hora do check-in.'
+        required: false
+        example: '2025-07-10 14:00:00'
+        type: datetime
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      garagem:
+        name: garagem
+        description: 'Indica se usará garagem: 0 (não), 1 (sim), 2 (vago).'
+        required: false
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      reserva_id: 1
+      dataHoraEntrada: '2025-07-10 14:00:00'
+      garagem: 2
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Check-in atualizado com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-in não encontrado"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/checkins/{id}'
+    metadata:
+      groupName: Check-ins
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: |-
+        Exclui um check-in.
+
+        Remove permanentemente um registro de check-in.
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the checkin.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      reservaId:
+        name: reservaId
+        description: 'ID do check-in.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: consequatur
+      reservaId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Check-in excluído com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Check-in não encontrado, registro não excluído"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

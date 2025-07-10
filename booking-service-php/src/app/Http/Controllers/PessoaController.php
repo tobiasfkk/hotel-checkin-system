@@ -7,11 +7,28 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Pessoas
+ * Gerenciamento de pessoas.
+ */
 class PessoaController extends Controller
 {
     /**
-     * Consulta todas as pessoas cadastradas.
-     * @return JsonResponse
+     * Lista todas as pessoas cadastradas.
+     *
+     * Retorna todos os registros de pessoas no banco.
+     *
+     * @response 200 [
+     *   {
+     *     "id": 1,
+     *     "nome": "João Silva",
+     *     "cpf": "12345678900",
+     *     "telefone": "11999999999"
+     *   }
+     * ]
+     * @response 200 {
+     *   "message": "Não existem pessoas cadastradas"
+     * }
      */
     public function index() {
         $pessoa = Pessoa::all();
@@ -25,8 +42,21 @@ class PessoaController extends Controller
 
     /**
      * Cadastra uma nova pessoa.
-     * @param Request $request  
-     * @return JsonResponse
+     *
+     * Cria um novo registro com nome, CPF e telefone.
+     *
+     * @bodyParam nome string required Nome completo da pessoa. Ex: João Silva
+     * @bodyParam cpf string required CPF válido e único. Ex: 12345678900
+     * @bodyParam telefone string required Telefone de contato. Ex: 11999999999
+     *
+     * @response 201 {
+     *   "message": "Pessoa incluída com sucesso"
+     * }
+     * @response 422 {
+     *   "errors": {
+     *     "cpf": ["Já existe uma pessoa cadastrada com este CPF."]
+     *   }
+     * }
      */
     public function store(Request $request) {
         $validated = $request->validate([
@@ -43,9 +73,21 @@ class PessoaController extends Controller
     }
 
     /**
-     * Consulta a pessoa com o id informado.
-     * @param integer $id
-     * @return JsonResponse
+     * Consulta uma pessoa pelo ID.
+     *
+     * Retorna os dados de uma pessoa com base no ID informado.
+     *
+     * @urlParam id integer required ID da pessoa. Ex: 1
+     * 
+     * @response 200 {
+     *   "id": 1,
+     *   "nome": "João Silva",
+     *   "cpf": "12345678900",
+     *   "telefone": "11999999999"
+     * }
+     * @response 404 {
+     *   "message": "Pessoa não encontrada"
+     * }
      */
     public function show($id) {
         if (!$pessoa = Pessoa::find($id)) {
@@ -56,10 +98,21 @@ class PessoaController extends Controller
     }
 
     /**
-     * Atualiza os dados da pessoa com o id informado.
-     * @param Request $request
-     * @param integer $id
-     * @return JsonResponse
+     * Atualiza os dados de uma pessoa.
+     *
+     * Modifica os dados de nome, CPF e/ou telefone da pessoa com o ID informado.
+     *
+     * @urlParam id integer required ID da pessoa. Ex: 1
+     * @bodyParam nome string Nome completo. Ex: Maria Oliveira
+     * @bodyParam cpf string CPF único. Ex: 12345678911
+     * @bodyParam telefone string Telefone de contato. Ex: 11988887777
+     *
+     * @response 200 {
+     *   "message": "Pessoa alterada com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Pessoa não encontrada, dados não alterados"
+     * }
      */
     public function update(Request $request, $id) {
         if (!$pessoa = Pessoa::find($id)) {
@@ -78,9 +131,18 @@ class PessoaController extends Controller
     }
 
     /**
-     * Exclui um cadastro de pessoa.
-     * @param integer $id
-     * @return JsonResponse
+     * Exclui uma pessoa pelo ID.
+     *
+     * Remove o registro da pessoa correspondente ao ID.
+     *
+     * @urlParam id integer required ID da pessoa. Ex: 1
+     *
+     * @response 200 {
+     *   "message": "Pessoa excluída com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Pessoa não encontrada, registro não excluído"
+     * }
      */
     public function destroy($id) {
         if (!$pessoa = Pessoa::find($id)) {
