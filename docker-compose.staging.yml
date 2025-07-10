@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  booking-db:
+    image: mysql:8.0
+    container_name: booking-db-staging
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bookingdb
+    ports:
+      - "3308:3306"  # Porta diferente para staging
+    networks:
+      - hotel-network
+    volumes:
+      - booking_db_staging:/var/lib/mysql
+
+  auth-db:
+    image: postgres:15
+    container_name: auth-db-staging
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: authdb
+    ports:
+      - "5433:5432"  # Porta diferente para staging
+    networks:
+      - hotel-network
+    volumes:
+      - auth_db_staging:/var/lib/postgresql/data
+
+  auth-service:
+    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/auth-service:${APP_VERSION:-latest}
+    container_name: auth-service-staging
+    expose:
+      - "80"
+    depends_on:
+      - auth-db
+    environment:
+      - DB_HOST=auth-db
+      - DB_PORT=5432
+      - DB_DATABASE=authdb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=root
+      - APP_ENV=staging
+    networks:
+      - hotel-network
+
+  booking-service:
+    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/booking-service:${APP_VERSION:-latest}
+    container_name: booking-service-staging
+    expose:
+      - "80"
+    depends_on:
+      - booking-db
+    environment:
+      - DB_HOST=booking-db
+      - DB_PORT=3306
+      - DB_DATABASE=bookingdb
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+      - APP_ENV=staging
+    networks:
+      - hotel-network
+
+  billing-service:
+    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/billing-service:${APP_VERSION:-latest}
+    container_name: billing-service-staging
+    expose:
+      - "8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=staging
+    networks:
+      - hotel-network
+
+  api-gateway:
+    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/api-gateway:${APP_VERSION:-latest}
+    container_name: api-gateway-staging
+    ports:
+      - "8081:8080"  # Porta diferente para staging
+    depends_on:
+      - auth-service
+      - booking-service
+      - billing-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=staging
+      - AUTH_SERVICE_URL=http://auth-service:80
+      - BOOKING_SERVICE_URL=http://booking-service:80
+      - BILLING_SERVICE_URL=http://billing-service:8080
+    networks:
+      - hotel-network
+
+volumes:
+  booking_db_staging:
+    driver: local
+  auth_db_staging:
+    driver: local
+
+networks:
+  hotel-network:
+    driver: bridge
