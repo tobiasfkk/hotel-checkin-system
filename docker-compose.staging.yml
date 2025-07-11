@@ -30,8 +30,8 @@ services:
       - auth_db_staging:/var/lib/postgresql/data
 
   auth-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/auth-service:${APP_VERSION:-latest}
-    container_name: auth-service-staging
+    image: doege/hotel-checkin-system:auth-service-stag
+    container_name: auth-service-stag
     expose:
       - "80"
     depends_on:
@@ -48,8 +48,8 @@ services:
     restart: unless-stopped
 
   booking-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/booking-service:${APP_VERSION:-latest}
-    container_name: booking-service-staging
+    image: doege/hotel-checkin-system:booking-service-stag
+    container_name: booking-service-stag
     expose:
       - "80"
     depends_on:
@@ -66,8 +66,8 @@ services:
     restart: unless-stopped
 
   billing-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/billing-service:${APP_VERSION:-latest}
-    container_name: billing-service-staging
+    image: doege/hotel-checkin-system:billing-service-stag
+    container_name: billing-service-stag
     expose:
       - "8080"
     environment:
@@ -77,8 +77,8 @@ services:
     restart: unless-stopped
 
   api-gateway:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/api-gateway:${APP_VERSION:-latest}
-    container_name: api-gateway-staging
+    image: doege/hotel-checkin-system:api-gateway-stag
+    container_name: api-gateway-stag
     ports:
       - "8080:8080"
     depends_on:
