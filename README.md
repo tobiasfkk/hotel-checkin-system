@@ -96,15 +96,6 @@ Senha: admin123
 - **🗄️ Database** - Conexões, queries, performance
 - **🌐 APIs** - Tempo resposta, throughput, erros
 
-### 🚀 Iniciar Monitoramento Completo:
-```bash
-# Ambiente completo (aplicação + monitoramento)
-docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.yml up --build -d
-
-# Apenas ferramentas de monitoramento
-docker-compose -f docker-compose.monitoring.yml up --build -d
-```
-
 ### 🌐 URLs das Ferramentas:
 
 #### 📊 Prometheus - Métricas
@@ -164,109 +155,6 @@ URL: http://localhost:9093
 
 ---
 
-## 🛠️ DevOps Tools & Artifact Management
-
-### 📦 **Nexus Repository Manager**
-Artifact repository **privado** para gerenciamento centralizado de dependências e artefatos internos.
-
-#### 🎯 **Para que serve Nexus:**
-- **📦 Cache Maven** - Acelera builds (download de dependências)
-- **🏢 Artefatos internos** - JAR/WAR da sua organização
-- **🐳 Registry Docker** - Imagens Docker internas/desenvolvimento
-- **🔒 Controle acesso** - Repositórios corporativos privados
-- **⚡ Performance** - Cache local de dependências externas
-
-#### 🚀 **Iniciar Nexus:**
-```bash
-# Subir Nexus Repository
-docker-compose -f docker-compose.nexus.yml up -d
-
-# Acessar: http://localhost:8081
-# Login inicial: admin / (senha em logs)
-docker-compose -f docker-compose.nexus.yml logs nexus | findstr password
-```
-
-#### 📦 **Repositórios configurados:**
-- **Maven Central** (proxy) - Cache do Maven Central
-- **Maven Releases** (hosted) - Artefatos finais da empresa
-- **Maven Snapshots** (hosted) - Builds desenvolvimento
-- **Docker Registry** (hosted) - Imagens Docker internas
-
-#### ⚙️ **Configuração Maven (pom.xml):**
-```xml
-<!-- Cache de dependências via Nexus -->
-<repositories>
-    <repository>
-        <id>nexus-public</id>
-        <url>http://localhost:8081/repository/maven-public/</url>
-    </repository>
-</repositories>
-
-<!-- Deploy de artefatos internos no Nexus -->
-<distributionManagement>
-    <repository>
-        <id>nexus-releases</id>
-        <url>http://localhost:8081/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-        <id>nexus-snapshots</id>
-        <url>http://localhost:8081/repository/maven-snapshots/</url>
-    </snapshotRepository>
-</distributionManagement>
-```
-
-#### 🐳 **Docker Registry no Nexus:**
-```bash
-# Push imagem para Nexus (desenvolvimento/teste)
-docker tag billing-service localhost:8081/hotel/billing-service:dev
-docker push localhost:8081/hotel/billing-service:dev
-
-# Pull imagem do Nexus
-docker pull localhost:8081/hotel/billing-service:dev
-```
-
----
-
-### 📊 **SonarQube - Code Quality Analysis**
-Sistema de análise estática de código para detectar bugs, vulnerabilidades e code smells.
-
-#### 🚀 **Como iniciar SonarQube:**
-```bash
-# Iniciar SonarQube com PostgreSQL
-docker-compose -f docker-compose.sonar.yml up -d
-
-# Verificar se está funcionando
-docker logs sonarqube
-```
-
-#### 🌐 **Acessar SonarQube:**
-```
-URL: http://localhost:9000
-Usuário: admin
-Senha: admin
-```
-
-#### 📊 **Executar análise manualmente:**
-```bash
-# Para projetos Java (billing-service e api-gateway)
-cd billing-service-java
-mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
-
-cd ../api-gateway-java
-mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin
-```
-
-#### 🔧 **Configuração automática no pom.xml:**
-```xml
-<properties>
-    <sonar.projectKey>hotel-checkin-billing</sonar.projectKey>
-    <sonar.organization>hotel-systems</sonar.organization>
-    <sonar.host.url>http://localhost:9000</sonar.host.url>
-</properties>
-```
-
----
-
 ### 🐳 **DockerHub Integration**
 Registry **público** para armazenamento e distribuição de imagens Docker.
 
@@ -291,71 +179,6 @@ docker push hotel-checkin-system/billing-service:latest
 # Para todos os serviços
 docker-compose build
 docker-compose push
-```
-
-#### ⚙️ **Jenkins Pipeline:**
-O Jenkinsfile já está configurado para:
-- ✅ Build automático das imagens
-- ✅ Push para DockerHub em branches main/develop
-- ✅ Versionamento automático (BUILD_NUMBER-GIT_COMMIT)
-- ✅ Tag 'latest' para branch main
-
----
-
-## 🔄 **Nexus vs DockerHub - Diferenças e Quando Usar**
-
-### 📊 **Comparação Detalhada:**
-
-| Característica | 🏛️ **Nexus Repository** | 🐳 **DockerHub** |
-|---|---|---|
-| **🎯 Propósito** | Artifact Repository **Privado** | Registry Docker **Público** |
-| **📦 Artefatos** | JAR, WAR, ZIP, Docker, NPM, NuGet | **Apenas** imagens Docker |
-| **🔒 Acesso** | **Interno** (empresa/projeto) | **Externo** (distribuição) |
-| **💰 Custo** | **Gratuito** (self-hosted) | Limitações no plano gratuito |
-| **🏢 Ambiente** | **Desenvolvimento/Corporativo** | **Produção/Deploy** |
-| **🔐 Privacidade** | **100% Privado** | Repositórios públicos/privados |
-
-### 🎯 **Quando usar NEXUS:**
-```
-✅ Desenvolvimento interno
-✅ Artefatos Maven (JAR/WAR)
-✅ Cache de dependências
-✅ Repositórios corporativos
-✅ Controle total de acesso
-✅ Imagens Docker internas/teste
-```
-
-### 🎯 **Quando usar DOCKERHUB:**
-```
-✅ Deploy em produção
-✅ Distribuição externa
-✅ CI/CD automático
-✅ Pull em servidores remotos
-✅ Versionamento público
-✅ Integração com orquestradores
-```
-
-### 🏗️ **Fluxo Recomendado (AMBOS):**
-```
-1. 🔧 Desenvolvimento → Nexus (artefatos internos)
-2. 🏗️ Build Maven → Nexus (JAR/WAR)
-3. 🐳 Build Docker → Nexus (teste interno)
-4. ✅ CI/CD Pipeline → DockerHub (produção)
-5. 🚀 Deploy Produção → Pull do DockerHub
-```
-
-### ⚙️ **Configuração COMPLEMENTAR:**
-```bash
-# 1. Maven artifacts → Nexus (desenvolvimento)
-mvn deploy  # → http://localhost:8081/repository/maven-releases/
-
-# 2. Docker images → Nexus (teste interno)
-docker tag billing-service localhost:8081/hotel/billing-service:dev
-docker push localhost:8081/hotel/billing-service:dev
-
-# 3. Docker images → DockerHub (produção)
-docker tag billing-service hotel-checkin-system/billing-service:latest
-docker push hotel-checkin-system/billing-service:latest
 ```
 
 ---
@@ -396,54 +219,50 @@ docker push hotel-checkin-system/billing-service:latest
 2. Quality Gate → Aprovação/Rejeição
 3. Métricas → Coverage, Bugs, Vulnerabilities
 ```
-
-### 📋 **RECOMENDAÇÃO para seu projeto:**
-```
-📋 MANTENHA TODAS AS FERRAMENTAS - são complementares!
-
-🏛️ Nexus: Cache Maven + Artefatos internos + Docker dev
-🐳 DockerHub: Deploy produção + Distribuição externa
-📊 SonarQube: Qualidade código + Security + Coverage
-📈 Grafana: Monitoramento + Métricas + Alertas
-
-📖 **Para mais detalhes:** [DevOps Guide Completo](docs/DEVOPS-GUIDE.md)
-```
-
 ---
 
-### 🔄 **Ambiente Completo DevOps:**
+### 🔄 **Ambiente Completo DevOps (Branch DEV):**
 ```bash
-# Iniciar stack completa (aplicação + monitoramento + qualidade + artefatos)
-docker-compose \
-  -f docker-compose.dev.yml \
-  -f docker-compose.monitoring.yml \
-  -f docker-compose.sonar.yml \
-  -f docker-compose.nexus.yml \
-  up -d
+# No branch DEV, um comando só inicia TUDO:
+git checkout dev
+docker-compose -f docker-compose.dev.yml up -d
 
-# URLs das ferramentas
-echo "Aplicação: http://localhost:8080"
-echo "Grafana: http://localhost:3000"
-echo "Prometheus: http://localhost:9090"
-echo "SonarQube: http://localhost:9000"
-echo "Nexus: http://localhost:8081"
-echo "Jenkins: http://localhost:8082" # Se configurado
+# Inclui automaticamente todas as ferramentas:
+# 🏨 Aplicação completa
+# 📊 Monitoramento (Grafana + Prometheus)  
+# 🔍 Qualidade (SonarQube)
+# 📦 Artefatos (Nexus)
 ```
 
-### 📊 **URLs das Ferramentas DevOps:**
+### 📊 **URLs das Ferramentas DevOps (Branch DEV):**
 
-#### 📦 **Nexus Repository**
+#### 🏨 **Aplicação Principal**
 ```
-URL: http://localhost:8081
-Usuário: admin
-Senha: (ver logs do container)
+URL: http://localhost:8080
+API Gateway: Entrada principal para todos os serviços
 ```
 
-#### 📊 **SonarQube**
+#### 📊 **Monitoramento**
 ```
-URL: http://localhost:9000
-Usuário: admin
-Senha: admin
+Grafana: http://localhost:3000 (admin/admin123)
+Prometheus: http://localhost:9090
+Node Exporter: http://localhost:9100
+```
+
+#### 🔍 **Qualidade de Código**
+```
+SonarQube: http://localhost:9000 (admin/admin)
+```
+
+#### 📦 **Repositório de Artefatos**
+```
+Nexus: http://localhost:8081 (admin/senha nos logs)
+```
+
+#### 🗄️ **Bancos de Dados**
+```
+MySQL (Booking): localhost:3307 (root/root)
+PostgreSQL (Auth): localhost:5432 (postgres/root)
 ```
 
 #### 🐳 **DockerHub**
@@ -452,23 +271,53 @@ Registry: docker.io/hotel-checkin-system/
 Imagens: auth-service, booking-service, billing-service, api-gateway
 ```
 
-### 🏨 Aplicação Hoteleira:
-- ✅ **Auth Service** - Autenticação e autorização
-- ✅ **Booking Service** - Gestão de reservas e check-in/out
-- ✅ **Billing Service** - Cálculo de valores e faturamento
-- ✅ **Database** - MySQL com migrations e seeders
-- ✅ **APIs REST** - Endpoints documentados e testáveis
+### 🎯 **Portas por Ambiente:**
+
+#### 🔧 **DEV** (Branch dev):
+- **8080** - API Gateway
+- **3000** - Grafana  
+- **9000** - SonarQube
+- **9090** - Prometheus
+- **9100** - Node Exporter
+- **8081** - Nexus
+- **3307** - MySQL
+- **5432** - PostgreSQL
+
+#### 🧪 **STAGING** (Branch staging):
+- **8080** - API Gateway
+- **3000** - Grafana
+- **9090** - Prometheus
+- **3308** - MySQL (porta diferente)
+- **5433** - PostgreSQL (porta diferente)
+
+#### 🚀 **PROD** (Branch prod):
+- **8080** - API Gateway
+- **3000** - Grafana
+- **9090** - Prometheus
+- **3309** - MySQL (porta diferente)
+- **5434** - PostgreSQL (porta diferente)
 
 ---
 
 ## 🛠️ Executar o projeto
 
-### Ambientes disponíveis:
-- **Desenvolvimento:** `docker-compose.dev.yml`
-- **Produção:** `docker-compose.prod.yml` 
-- **Monitoramento:** `docker-compose.monitoring.yml`
-- **Análise de código:** `docker-compose.sonar.yml`
-- **Artifact Management:** `docker-compose.nexus.yml`
+### Ambientes disponíveis e estrutura:
+
+#### 🔧 **Branch DEV** (Desenvolvimento - Ambiente Completo)
+- **Arquivo único consolidado:** `docker-compose.dev.yml`
+- **Inclui TUDO necessário para desenvolvimento:**
+  - 🏨 **Aplicações principais** (auth, booking, billing, gateway)
+  - 📊 **Monitoramento completo** (Grafana, Prometheus, Node Exporter)
+  - 🔍 **Análise de qualidade** (SonarQube + PostgreSQL)
+  - 📦 **Repositório de artefatos** (Nexus Repository)
+
+#### 🧪 **Branch STAGING** (Homologação)
+- **Arquivo único consolidado:** `docker-compose.staging.yml`
+- **Inclui:** Aplicações + Monitoramento (configurações otimizadas para staging)
+
+#### 🚀 **Branch PROD** (Produção)
+- **Arquivo único consolidado:** `docker-compose.prod.yml`
+- **Inclui:** Aplicações + Monitoramento essencial (configurações de produção)
 
 ### Instalação
 #### Pré-requisitos
@@ -481,16 +330,45 @@ git clone https://github.com/tobiasfkk/hotel-checkin-system
 cd hotel-checkin-system
 ```
 
-#### Executar ambiente completo (recomendado)
+#### Executar ambiente de desenvolvimento (RECOMENDADO - Branch DEV)
 ```bash
-# Ambiente de desenvolvimento com monitoramento
-docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.yml up --build -d
+# Mudar para branch de desenvolvimento
+git checkout dev
+
+# Iniciar ambiente COMPLETO com um comando só
+docker-compose -f docker-compose.dev.yml up --build -d
+
+# Inclui automaticamente:
+# ✅ Aplicações principais (auth, booking, billing, gateway)
+# ✅ Monitoramento (Grafana, Prometheus, Node Exporter)  
+# ✅ Análise de qualidade (SonarQube + PostgreSQL)
+# ✅ Repositório de artefatos (Nexus Repository)
 ```
 
-#### Ou executar apenas os serviços principais
+#### Executar ambiente de staging
 ```bash
-docker-compose up --build -d
+# Mudar para branch de staging
+git checkout staging
+
+# Iniciar ambiente de homologação
+docker-compose -f docker-compose.staging.yml up --build -d
 ```
+
+#### Executar ambiente de produção
+```bash
+# Mudar para branch de produção
+git checkout prod
+
+# Iniciar ambiente de produção
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+#### ⚡ **Vantagens da nova estrutura:**
+- **🎯 Um comando só**: Não precisa mais gerenciar múltiplos arquivos docker-compose
+- **🔧 Ambiente completo**: Tudo que você precisa em cada branch específica
+- **📋 Gestão simplificada**: Cada ambiente tem seu arquivo consolidado
+- **🚀 Deploy otimizado**: Configurações específicas para cada ambiente
+- **📚 Documentação clara**: Master branch mantém arquivos separados para referência
 
 ### Containers que serão criados
 - **hotel-checkin-system**:
@@ -882,3 +760,66 @@ docker-compose up --build -d
     - **Username**: Nome de usuário do Docker Hub
     - **Password**: Senha ou token do Docker Hub
     - **ID**: dockerhub-credentials-id
+
+---
+
+## 🔄 **Como alternar entre ambientes**
+
+### 📋 **Workflow recomendado:**
+
+#### 1. **🔧 Desenvolvimento (Branch DEV)**
+```bash
+# Parar ambiente atual (se houver)
+docker-compose down
+
+# Mudar para branch de desenvolvimento  
+git checkout dev
+
+# Iniciar ambiente completo de desenvolvimento
+docker-compose -f docker-compose.dev.yml up --build -d
+
+# Acessar: http://localhost:8080
+# Monitoramento: http://localhost:3000
+# Qualidade: http://localhost:9000
+# Artefatos: http://localhost:8081
+```
+
+#### 2. **🧪 Testes em Staging (Branch STAGING)**
+```bash
+# Parar ambiente de desenvolvimento
+docker-compose -f docker-compose.dev.yml down
+
+# Mudar para branch de staging
+git checkout staging
+
+# Iniciar ambiente de homologação
+docker-compose -f docker-compose.staging.yml up --build -d
+
+# Acessar: http://localhost:8080 (configurações de staging)
+```
+
+#### 3. **🚀 Deploy em Produção (Branch PROD)**
+```bash
+# Parar ambiente de staging
+docker-compose -f docker-compose.staging.yml down
+
+# Mudar para branch de produção
+git checkout prod
+
+# Iniciar ambiente de produção
+docker-compose -f docker-compose.prod.yml up --build -d
+
+# Acessar: http://localhost:8080 (configurações de produção)
+```
+
+### 🎯 **Diferenças entre ambientes:**
+
+| Característica | 🔧 **DEV** | 🧪 **STAGING** | 🚀 **PROD** |
+|---|---|---|---|
+| **🔍 SonarQube** | ✅ Incluído | ❌ Não | ❌ Não |
+| **📦 Nexus** | ✅ Incluído | ❌ Não | ❌ Não |
+| **📊 Monitoramento** | ✅ Completo | ✅ Essencial | ✅ Essencial |
+| **🗄️ Portas DB** | 3307/5432 | 3308/5433 | 3309/5434 |
+| **🔧 Hot Reload** | ✅ Sim | ❌ Não | ❌ Não |
+| **📋 Logs** | ✅ Verboso | ⚠️ Moderado | ❌ Mínimo |
+| **🚀 Performance** | ⚠️ Desenvolvimento | ✅ Otimizado | ✅ Máximo |
