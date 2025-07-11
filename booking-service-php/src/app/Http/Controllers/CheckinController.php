@@ -7,11 +7,34 @@ use App\Models\Reserva;
 use DateTime;
 use Illuminate\Http\Request;
 
+/**
+ * @group Check-ins
+ * Gerenciamento de entradas de hóspedes.
+ */
 class CheckinController extends Controller
 {
     /**
+     * @group Check-ins
      * Lista todos os check-ins cadastrados.
-     * @return JsonResponse
+     *
+     * Retorna todos os check-ins com as reservas associadas.
+     *
+     * @response 200 {
+     *   [
+     *     {
+     *       "id": 1,
+     *       "reserva_id": 1,
+     *       "dataHoraEntrada": "2025-07-10T14:00:00",
+     *       "garagem": 1,
+     *       "reserva": {
+     *         "id": 1,
+     *         "numeroQuarto": 101,
+     *         "dataHoraInicio": "2025-07-10T14:00:00",
+     *         "dataHoraFim": "2025-07-12T12:00:00"
+     *       }
+     *     }
+     *   ]
+     * }
      */
     public function index()
     {
@@ -25,9 +48,21 @@ class CheckinController extends Controller
     }
 
     /**
+     * @group Check-ins
      * Cadastra um novo check-in.
-     * @param Request $request
-     * @return JsonResponse
+     *
+     * Verifica se a data de entrada está dentro do período da reserva.
+     *
+     * @bodyParam reserva_id integer required ID da reserva associada. Example: 1
+     * @bodyParam dataHoraEntrada datetime required Data e hora do check-in. Example: 2025-07-10 14:00:00
+     * @bodyParam garagem integer required Indica se usará garagem: 0 (não), 1 (sim), 2 (vago). Example: 1
+     *
+     * @response 201 {
+     *   "message": "Check-in criado com sucesso"
+     * }
+     * @response 422 {
+     *   "message": "A data de check-in deve estar entre o início e final da Reserva"
+     * }
      */
     public function store(Request $request)
     {
@@ -55,9 +90,24 @@ class CheckinController extends Controller
     }
 
     /**
-     * Exibe um check-in específico.  
-     * @param integer $reservaId
-     * @return JsonResponse
+     * @group Check-ins
+     * Exibe um check-in específico.
+     *
+     * Mostra os dados do check-in com a reserva e o checkout vinculados.
+     *
+     * @urlParam reservaId integer required ID do check-in. Example: 1
+     *
+     * @response 200 {
+     *   "id": 1,
+     *   "reserva_id": 1,
+     *   "dataHoraEntrada": "2025-07-10T14:00:00",
+     *   "garagem": 1,
+     *   "reserva": { ... },
+     *   "checkout": { ... }
+     * }
+     * @response 404 {
+     *   "message": "Check-in não encontrado"
+     * }
      */
     public function show($reservaId)
     {
@@ -71,10 +121,22 @@ class CheckinController extends Controller
     }
 
     /**
+     * @group Check-ins
      * Atualiza um check-in.
-     * @param Request $request
-     * @param integer $reservaId
-     * @return JsonResponse
+     *
+     * Permite modificar os dados do check-in.
+     *
+     * @urlParam reservaId integer required ID do check-in. Example: 1
+     * @bodyParam reserva_id integer ID da reserva associada. Example: 1
+     * @bodyParam dataHoraEntrada datetime Data e hora do check-in. Example: 2025-07-10 14:00:00
+     * @bodyParam garagem integer Indica se usará garagem: 0 (não), 1 (sim), 2 (vago). Example: 2
+     *
+     * @response 200 {
+     *   "message": "Check-in atualizado com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Check-in não encontrado"
+     * }
      */
     public function update(Request $request, $reservaId)
     {
@@ -96,9 +158,19 @@ class CheckinController extends Controller
     }
 
     /**
-     * Exclui um cadastro de Check-in.
-     * @param integer $reservaId
-     * @return JsonResponse
+     * @group Check-ins
+     * Exclui um check-in.
+     *
+     * Remove permanentemente um registro de check-in.
+     *
+     * @urlParam reservaId integer required ID do check-in. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Check-in excluído com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Check-in não encontrado, registro não excluído"
+     * }
      */
     public function destroy($reservaId)
     {

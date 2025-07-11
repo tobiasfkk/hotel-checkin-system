@@ -1,0 +1,353 @@
+name: Pessoas
+description: 'Gerenciamento de pessoas.'
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/pessoas
+    metadata:
+      groupName: Pessoas
+      groupDescription: 'Gerenciamento de pessoas.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Lista todas as pessoas cadastradas.'
+      description: 'Retorna todos os registros de pessoas no banco.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          [
+            {
+              "id": 1,
+              "nome": "João Silva",
+              "cpf": "12345678900",
+              "telefone": "11999999999"
+            }
+          ]
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Não existem pessoas cadastradas"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/pessoas
+    metadata:
+      groupName: Pessoas
+      groupDescription: 'Gerenciamento de pessoas.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Cadastra uma nova pessoa.'
+      description: 'Cria um novo registro com nome, CPF e telefone.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      nome:
+        name: nome
+        description: 'Nome completo da pessoa. Ex: João Silva'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      cpf:
+        name: cpf
+        description: 'CPF válido e único. Ex: 12345678900'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      telefone:
+        name: telefone
+        description: 'Telefone de contato. Ex: 11999999999'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      nome: consequatur
+      cpf: consequatur
+      telefone: consequatur
+    fileParameters: []
+    responses:
+      -
+        status: 201
+        content: |-
+          {
+            "message": "Pessoa incluída com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 422
+        content: |-
+          {
+            "errors": {
+              "cpf": ["Já existe uma pessoa cadastrada com este CPF."]
+            }
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/pessoas/{id}'
+    metadata:
+      groupName: Pessoas
+      groupDescription: 'Gerenciamento de pessoas.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Consulta uma pessoa pelo ID.'
+      description: 'Retorna os dados de uma pessoa com base no ID informado.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da pessoa. Ex: 1'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "id": 1,
+            "nome": "João Silva",
+            "cpf": "12345678900",
+            "telefone": "11999999999"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Pessoa não encontrada"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/pessoas/{id}'
+    metadata:
+      groupName: Pessoas
+      groupDescription: 'Gerenciamento de pessoas.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Atualiza os dados de uma pessoa.'
+      description: 'Modifica os dados de nome, CPF e/ou telefone da pessoa com o ID informado.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da pessoa. Ex: 1'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      nome:
+        name: nome
+        description: 'Nome completo. Ex: Maria Oliveira'
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      cpf:
+        name: cpf
+        description: 'CPF único. Ex: 12345678911'
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      telefone:
+        name: telefone
+        description: 'Telefone de contato. Ex: 11988887777'
+        required: false
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      nome: consequatur
+      cpf: consequatur
+      telefone: consequatur
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Pessoa alterada com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Pessoa não encontrada, dados não alterados"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - DELETE
+    uri: 'api/pessoas/{id}'
+    metadata:
+      groupName: Pessoas
+      groupDescription: 'Gerenciamento de pessoas.'
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Exclui uma pessoa pelo ID.'
+      description: 'Remove o registro da pessoa correspondente ao ID.'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'ID da pessoa. Ex: 1'
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 17
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: |-
+          {
+            "message": "Pessoa excluída com sucesso"
+          }
+        headers: []
+        description: ''
+        custom: []
+      -
+        status: 404
+        content: |-
+          {
+            "message": "Pessoa não encontrada, registro não excluído"
+          }
+        headers: []
+        description: ''
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

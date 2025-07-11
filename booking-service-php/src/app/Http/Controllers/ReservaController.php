@@ -6,11 +6,35 @@ use App\Models\Reserva;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @group Reservas
+ * Gerenciamento de reservas.
+ */
 class ReservaController extends Controller
 {
     /**
+     * @group Reservas
      * Lista todas as reservas cadastradas.
-     * @return JsonResponse
+     *
+     * Retorna todas as reservas com os dados da pessoa associada.
+     *
+     * @response 200 {
+     *    [
+     *      {
+     *        "id": 1,
+     *        "idPessoa": 2,
+     *        "numeroQuarto": 101,
+     *        "dataHoraInicio": "2025-07-12T14:00:00",
+     *        "dataHoraFim": "2025-07-14T12:00:00",
+     *        "pessoa": {
+     *          "id": 2,
+     *          "nome": "João da Silva",
+     *          "cpf": "000.000.000-00",
+     *          "telefone": "(11) 99999-0000"
+     *        }
+     *      }
+     *    ]
+     * }
      */
     public function index(): JsonResponse
     {
@@ -24,9 +48,22 @@ class ReservaController extends Controller
     }
 
     /**
+     * @group Reservas
      * Cadastra uma nova reserva.
-     * @param Request $request
-     * @return JsonResponse
+     *
+     * Verifica se o quarto está disponível nas datas informadas antes de cadastrar.
+     *
+     * @bodyParam idPessoa integer required ID da pessoa. Example: 1
+     * @bodyParam numeroQuarto integer required Número do quarto. Example: 203
+     * @bodyParam dataHoraInicio datetime required Data/hora de entrada. Example: 2025-07-15 14:00:00
+     * @bodyParam dataHoraFim datetime required Data/hora de saída. Example: 2025-07-17 12:00:00
+     *
+     * @response 201 {
+     *   "message": "Reserva criada com sucesso"
+     * }
+     * @response 422 {
+     *   "message": "O quarto não está disponível para as datas selecionadas"
+     * }
      */
     public function store(Request $request): JsonResponse
     {
@@ -48,10 +85,26 @@ class ReservaController extends Controller
         return response()->json(['message' => 'Reserva criada com sucesso'], 201);
     }
 
+
     /**
+     * @group Reservas
      * Exibe uma reserva específica.
-     * @param integer $id
-     * @return JsonResponse
+     *
+     * Retorna a reserva com os dados da pessoa associada.
+     *
+     * @urlParam id integer required ID da reserva. Example: 1
+     * 
+     * @response 200 {
+     *   "id": 1,
+     *   "idPessoa": 1,
+     *   "numeroQuarto": 203,
+     *   "dataHoraInicio": "2025-07-15T14:00:00",
+     *   "dataHoraFim": "2025-07-17T12:00:00",
+     *   "pessoa": { ... }
+     * }
+     * @response 404 {
+     *   "message": "Reserva não encontrada"
+     * }
      */
     public function show($id) {
         $reserva = Reserva::with('pessoa')->find($id);
@@ -64,10 +117,22 @@ class ReservaController extends Controller
     }
 
     /**
+     * @group Reservas
      * Atualiza uma reserva.
-     * @param Request $request
-     * @param integer $id
-     * @return JsonResponse
+     *
+     * Verifica disponibilidade antes de atualizar.
+     *
+     * @urlParam id integer required ID da reserva. Example: 1
+     * @bodyParam numeroQuarto integer Número do quarto. Example: 203
+     * @bodyParam dataHoraInicio datetime Data/hora de entrada. Example: 2025-07-15 14:00:00
+     * @bodyParam dataHoraFim datetime Data/hora de saída. Example: 2025-07-17 12:00:00
+     *
+     * @response 200 {
+     *   "message": "Reserva atualizada com sucesso"
+     * }
+     * @response 422 {
+     *   "message": "O quarto não está disponível para as datas selecionadas"
+     * }
      */
     public function update(Request $request, $id) {
         $reserva = Reserva::find($id);
@@ -94,9 +159,17 @@ class ReservaController extends Controller
     }
 
     /**
-     * Exclui um cadastro de Reserva.
-     * @param integer $id
-     * @return JsonResponse
+     * @group Reservas
+     * Exclui uma reserva.
+     *
+     * @urlParam id integer required ID da reserva. Example: 1
+     * 
+     * @response 200 {
+     *   "message": "Reserva excluída com sucesso"
+     * }
+     * @response 404 {
+     *   "message": "Reserva não encontrada, registro não excluído"
+     * }
      */
     public function destroy($id) {
         if (!$reserva = Reserva::find($id)) {
