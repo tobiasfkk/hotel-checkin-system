@@ -32,7 +32,7 @@ services:
     command: postgres -c 'shared_buffers=256MB' -c 'max_connections=100'
 
   auth-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/auth-service:${APP_VERSION:-latest}
+    image: doege/hotel-checkin-system:auth-service-prod
     container_name: auth-service-prod
     expose:
       - "80"
@@ -58,7 +58,7 @@ services:
           memory: 256M
 
   booking-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/booking-service:${APP_VERSION:-latest}
+    image: doege/hotel-checkin-system:booking-service-prod
     container_name: booking-service-prod
     expose:
       - "80"
@@ -84,7 +84,7 @@ services:
           memory: 256M
 
   billing-service:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/billing-service:${APP_VERSION:-latest}
+    image: doege/hotel-checkin-system:billing-service-prod
     container_name: billing-service-prod
     expose:
       - "8080"
@@ -103,7 +103,7 @@ services:
           memory: 512M
 
   api-gateway:
-    image: ${DOCKER_IMAGE_PREFIX:-hotelcheckin}/api-gateway:${APP_VERSION:-latest}
+    image: doege/hotel-checkin-system:api-gateway-prod
     container_name: api-gateway-prod
     ports:
       - "8080:8080"
