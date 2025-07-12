@@ -1,6 +1,5 @@
 services:
 
-  # === APLICAÇÕES PRINCIPAIS ===
   booking-db:
     image: mysql:8.0
     container_name: booking-db
@@ -46,7 +45,6 @@ services:
 
   booking-service:
     build: ./booking-service-php
-    # Removendo a exposição da porta externa - apenas disponível internamente
     ports:
       - "8087:80" 
     depends_on:
@@ -66,7 +64,6 @@ services:
 
   billing-service:
     build: ./billing-service-java
-    # Removendo a exposição da porta externa - apenas disponível internamente
     expose:
       - "8083"
     networks:
@@ -85,7 +82,6 @@ services:
     networks:
       - hotel-network
 
-  # === MONITORAMENTO ===
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -141,7 +137,6 @@ services:
       - monitoring
     restart: unless-stopped
 
-  # === QUALIDADE DE CÓDIGO ===
   sonarqube:
     image: sonarqube:community
     container_name: sonarqube
@@ -174,7 +169,6 @@ services:
       - sonar-network
     restart: unless-stopped
 
-  # === REPOSITÓRIO DE ARTEFATOS ===
   nexus:
     image: sonatype/nexus3:latest
     container_name: nexus
